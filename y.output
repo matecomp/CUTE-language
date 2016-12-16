@@ -1,0 +1,2150 @@
+Terminais não utilizados na gramática
+
+   TK_WHILE
+   TK_DOWHILE
+   TK_SWITCH
+   '='
+
+
+Estado 87 conflitos: 2 de deslocamento/redução
+Estado 88 conflitos: 2 de deslocamento/redução
+Estado 89 conflitos: 2 de deslocamento/redução
+Estado 90 conflitos: 12 de deslocamento/redução
+Estado 91 conflitos: 2 de deslocamento/redução
+Estado 92 conflitos: 12 de deslocamento/redução
+Estado 93 conflitos: 2 de deslocamento/redução
+Estado 94 conflitos: 2 de deslocamento/redução
+Estado 95 conflitos: 2 de deslocamento/redução
+Estado 96 conflitos: 2 de deslocamento/redução
+Estado 97 conflitos: 2 de deslocamento/redução
+Estado 98 conflitos: 2 de deslocamento/redução
+
+
+Gramática
+
+    0 $accept: S $end
+
+    1 S: PROGRAM VARS MAIN
+
+    2 PROGRAM: TK_PROGRAM TK_ID ';'
+
+    3 VARS: VAR ';' VARS
+    4     | %empty
+
+    5 VAR: TIPO IDS
+    6    | TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+    7    | TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+
+    8 TIPO: TK_DOUBLE
+    9     | TK_INT
+   10     | TK_BOOL
+   11     | TK_CHAR
+   12     | TK_STRING
+
+   13 IDS: IDS ',' TK_ID
+   14    | TK_ID
+
+   15 MAIN: TK_MBEGIN BLOCO TK_MEND
+
+   16 $@1: %empty
+
+   17 BLOCO: TK_BEGIN $@1 CMDS TK_END
+
+   18 CMDS: CMD ';' CMDS
+   19     | LOOP CMDS
+   20     | %empty
+
+   21 CMD: WRITE
+   22    | WRITELN
+   23    | ATRIB
+   24    | BLOCO
+   25    | VARS
+
+   26 LOOP: CMD_IF
+   27     | CMD_FOR
+
+   28 CMD_FOR: TK_FOR NOME_VAR TK_ATRIB E TK_PTPT E TK_BEGIN CMDS TK_END
+
+   29 CMD_IF: TK_IF E TK_BEGIN CMDS TK_END
+   30       | TK_IF E TK_BEGIN CMDS TK_END TK_ELSE TK_BEGIN CMDS TK_END
+
+   31 WRITELN: TK_WRITELN '(' E ')'
+
+   32 WRITE: TK_WRITE '(' E ')'
+
+   33 ATRIB: TK_ID TK_ATRIB E
+   34      | TK_ID '[' E ']' TK_ATRIB E
+   35      | TK_ID '[' E ']' '[' E ']' TK_ATRIB E
+
+   36 E: E '+' E
+   37  | E '-' E
+   38  | E '*' E
+   39  | E '/' E
+   40  | E '<' E
+   41  | E '>' E
+   42  | E TK_MEIG E
+   43  | E TK_MAIG E
+   44  | E TK_EQUAL E
+   45  | E TK_DIF E
+   46  | E TK_AND E
+   47  | E TK_OR E
+   48  | '(' E ')'
+   49  | F
+
+   50 F: NOME_VAR
+   51  | TK_INTEIRO
+   52  | TK_REAL
+   53  | TK_TEXTO
+
+   54 NOME_VAR: TK_ID
+   55         | TK_ID '[' E ']'
+   56         | TK_ID '[' E ']' '[' E ']'
+
+
+Terminais, com as regras onde eles aparecem
+
+$end (0) 0
+'(' (40) 31 32 48
+')' (41) 31 32 48
+'*' (42) 38
+'+' (43) 36
+',' (44) 13
+'-' (45) 37
+'/' (47) 39
+';' (59) 2 3 18
+'<' (60) 40
+'=' (61)
+'>' (62) 41
+'[' (91) 6 7 34 35 55 56
+']' (93) 6 7 34 35 55 56
+error (256)
+TK_PROGRAM (258) 2
+TK_BEGIN (259) 17 28 29 30
+TK_END (260) 17 28 29 30
+TK_MBEGIN (261) 15
+TK_MEND (262) 15
+TK_ATRIB (263) 28 33 34 35
+TK_IF (264) 29 30
+TK_ELSE (265) 30
+TK_MAIG (266) 43
+TK_MEIG (267) 42
+TK_DIF (268) 45
+TK_EQUAL (269) 44
+TK_AND (270) 46
+TK_OR (271) 47
+TK_FOR (272) 28
+TK_WHILE (273)
+TK_DOWHILE (274)
+TK_SWITCH (275)
+TK_PTPT (276) 6 7 28
+TK_INT (277) 9
+TK_CHAR (278) 11
+TK_BOOL (279) 10
+TK_DOUBLE (280) 8
+TK_STRING (281) 12
+TK_TEXTO (282) 53
+TK_ID (283) 2 13 14 33 34 35 54 55 56
+TK_INTEIRO (284) 6 7 51
+TK_REAL (285) 52
+TK_WRITELN (286) 31
+TK_WRITE (287) 32
+
+
+Não-terminais com as regras onde eles aparecem
+
+$accept (46)
+    à esquerda: 0
+S (47)
+    à esquerda: 1, à direita: 0
+PROGRAM (48)
+    à esquerda: 2, à direita: 1
+VARS (49)
+    à esquerda: 3 4, à direita: 1 3 25
+VAR (50)
+    à esquerda: 5 6 7, à direita: 3
+TIPO (51)
+    à esquerda: 8 9 10 11 12, à direita: 5 6 7
+IDS (52)
+    à esquerda: 13 14, à direita: 5 6 7 13
+MAIN (53)
+    à esquerda: 15, à direita: 1
+BLOCO (54)
+    à esquerda: 17, à direita: 15 24
+$@1 (55)
+    à esquerda: 16, à direita: 17
+CMDS (56)
+    à esquerda: 18 19 20, à direita: 17 18 19 28 29 30
+CMD (57)
+    à esquerda: 21 22 23 24 25, à direita: 18
+LOOP (58)
+    à esquerda: 26 27, à direita: 19
+CMD_FOR (59)
+    à esquerda: 28, à direita: 27
+CMD_IF (60)
+    à esquerda: 29 30, à direita: 26
+WRITELN (61)
+    à esquerda: 31, à direita: 22
+WRITE (62)
+    à esquerda: 32, à direita: 21
+ATRIB (63)
+    à esquerda: 33 34 35, à direita: 23
+E (64)
+    à esquerda: 36 37 38 39 40 41 42 43 44 45 46 47 48 49, à direita:
+    28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48
+    55 56
+F (65)
+    à esquerda: 50 51 52 53, à direita: 49
+NOME_VAR (66)
+    à esquerda: 54 55 56, à direita: 28 50
+
+
+State 0
+
+    0 $accept: . S $end
+
+    TK_PROGRAM  deslocar, e ir ao estado 1
+
+    S        ir ao estado 2
+    PROGRAM  ir ao estado 3
+
+
+State 1
+
+    2 PROGRAM: TK_PROGRAM . TK_ID ';'
+
+    TK_ID  deslocar, e ir ao estado 4
+
+
+State 2
+
+    0 $accept: S . $end
+
+    $end  deslocar, e ir ao estado 5
+
+
+State 3
+
+    1 S: PROGRAM . VARS MAIN
+
+    TK_INT     deslocar, e ir ao estado 6
+    TK_CHAR    deslocar, e ir ao estado 7
+    TK_BOOL    deslocar, e ir ao estado 8
+    TK_DOUBLE  deslocar, e ir ao estado 9
+    TK_STRING  deslocar, e ir ao estado 10
+
+    $padrão  reduzir usando a regra 4 (VARS)
+
+    VARS  ir ao estado 11
+    VAR   ir ao estado 12
+    TIPO  ir ao estado 13
+
+
+State 4
+
+    2 PROGRAM: TK_PROGRAM TK_ID . ';'
+
+    ';'  deslocar, e ir ao estado 14
+
+
+State 5
+
+    0 $accept: S $end .
+
+    $padrão  aceitar
+
+
+State 6
+
+    9 TIPO: TK_INT .
+
+    $padrão  reduzir usando a regra 9 (TIPO)
+
+
+State 7
+
+   11 TIPO: TK_CHAR .
+
+    $padrão  reduzir usando a regra 11 (TIPO)
+
+
+State 8
+
+   10 TIPO: TK_BOOL .
+
+    $padrão  reduzir usando a regra 10 (TIPO)
+
+
+State 9
+
+    8 TIPO: TK_DOUBLE .
+
+    $padrão  reduzir usando a regra 8 (TIPO)
+
+
+State 10
+
+   12 TIPO: TK_STRING .
+
+    $padrão  reduzir usando a regra 12 (TIPO)
+
+
+State 11
+
+    1 S: PROGRAM VARS . MAIN
+
+    TK_MBEGIN  deslocar, e ir ao estado 15
+
+    MAIN  ir ao estado 16
+
+
+State 12
+
+    3 VARS: VAR . ';' VARS
+
+    ';'  deslocar, e ir ao estado 17
+
+
+State 13
+
+    5 VAR: TIPO . IDS
+    6    | TIPO . IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+    7    | TIPO . IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+
+    TK_ID  deslocar, e ir ao estado 18
+
+    IDS  ir ao estado 19
+
+
+State 14
+
+    2 PROGRAM: TK_PROGRAM TK_ID ';' .
+
+    $padrão  reduzir usando a regra 2 (PROGRAM)
+
+
+State 15
+
+   15 MAIN: TK_MBEGIN . BLOCO TK_MEND
+
+    TK_BEGIN  deslocar, e ir ao estado 20
+
+    BLOCO  ir ao estado 21
+
+
+State 16
+
+    1 S: PROGRAM VARS MAIN .
+
+    $padrão  reduzir usando a regra 1 (S)
+
+
+State 17
+
+    3 VARS: VAR ';' . VARS
+
+    TK_INT     deslocar, e ir ao estado 6
+    TK_CHAR    deslocar, e ir ao estado 7
+    TK_BOOL    deslocar, e ir ao estado 8
+    TK_DOUBLE  deslocar, e ir ao estado 9
+    TK_STRING  deslocar, e ir ao estado 10
+
+    $padrão  reduzir usando a regra 4 (VARS)
+
+    VARS  ir ao estado 22
+    VAR   ir ao estado 12
+    TIPO  ir ao estado 13
+
+
+State 18
+
+   14 IDS: TK_ID .
+
+    $padrão  reduzir usando a regra 14 (IDS)
+
+
+State 19
+
+    5 VAR: TIPO IDS .
+    6    | TIPO IDS . '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+    7    | TIPO IDS . '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+   13 IDS: IDS . ',' TK_ID
+
+    '['  deslocar, e ir ao estado 23
+    ','  deslocar, e ir ao estado 24
+
+    $padrão  reduzir usando a regra 5 (VAR)
+
+
+State 20
+
+   17 BLOCO: TK_BEGIN . $@1 CMDS TK_END
+
+    $padrão  reduzir usando a regra 16 ($@1)
+
+    $@1  ir ao estado 25
+
+
+State 21
+
+   15 MAIN: TK_MBEGIN BLOCO . TK_MEND
+
+    TK_MEND  deslocar, e ir ao estado 26
+
+
+State 22
+
+    3 VARS: VAR ';' VARS .
+
+    $padrão  reduzir usando a regra 3 (VARS)
+
+
+State 23
+
+    6 VAR: TIPO IDS '[' . TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+    7    | TIPO IDS '[' . TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+
+    TK_INTEIRO  deslocar, e ir ao estado 27
+
+
+State 24
+
+   13 IDS: IDS ',' . TK_ID
+
+    TK_ID  deslocar, e ir ao estado 28
+
+
+State 25
+
+   17 BLOCO: TK_BEGIN $@1 . CMDS TK_END
+
+    TK_BEGIN    deslocar, e ir ao estado 20
+    TK_IF       deslocar, e ir ao estado 29
+    TK_FOR      deslocar, e ir ao estado 30
+    TK_INT      deslocar, e ir ao estado 6
+    TK_CHAR     deslocar, e ir ao estado 7
+    TK_BOOL     deslocar, e ir ao estado 8
+    TK_DOUBLE   deslocar, e ir ao estado 9
+    TK_STRING   deslocar, e ir ao estado 10
+    TK_ID       deslocar, e ir ao estado 31
+    TK_WRITELN  deslocar, e ir ao estado 32
+    TK_WRITE    deslocar, e ir ao estado 33
+
+    TK_END    reduzir usando a regra 20 (CMDS)
+    $padrão  reduzir usando a regra 4 (VARS)
+
+    VARS     ir ao estado 34
+    VAR      ir ao estado 12
+    TIPO     ir ao estado 13
+    BLOCO    ir ao estado 35
+    CMDS     ir ao estado 36
+    CMD      ir ao estado 37
+    LOOP     ir ao estado 38
+    CMD_FOR  ir ao estado 39
+    CMD_IF   ir ao estado 40
+    WRITELN  ir ao estado 41
+    WRITE    ir ao estado 42
+    ATRIB    ir ao estado 43
+
+
+State 26
+
+   15 MAIN: TK_MBEGIN BLOCO TK_MEND .
+
+    $padrão  reduzir usando a regra 15 (MAIN)
+
+
+State 27
+
+    6 VAR: TIPO IDS '[' TK_INTEIRO . TK_PTPT TK_INTEIRO ']'
+    7    | TIPO IDS '[' TK_INTEIRO . TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+
+    TK_PTPT  deslocar, e ir ao estado 44
+
+
+State 28
+
+   13 IDS: IDS ',' TK_ID .
+
+    $padrão  reduzir usando a regra 13 (IDS)
+
+
+State 29
+
+   29 CMD_IF: TK_IF . E TK_BEGIN CMDS TK_END
+   30       | TK_IF . E TK_BEGIN CMDS TK_END TK_ELSE TK_BEGIN CMDS TK_END
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 50
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 30
+
+   28 CMD_FOR: TK_FOR . NOME_VAR TK_ATRIB E TK_PTPT E TK_BEGIN CMDS TK_END
+
+    TK_ID  deslocar, e ir ao estado 46
+
+    NOME_VAR  ir ao estado 53
+
+
+State 31
+
+   33 ATRIB: TK_ID . TK_ATRIB E
+   34      | TK_ID . '[' E ']' TK_ATRIB E
+   35      | TK_ID . '[' E ']' '[' E ']' TK_ATRIB E
+
+    TK_ATRIB  deslocar, e ir ao estado 54
+    '['       deslocar, e ir ao estado 55
+
+
+State 32
+
+   31 WRITELN: TK_WRITELN . '(' E ')'
+
+    '('  deslocar, e ir ao estado 56
+
+
+State 33
+
+   32 WRITE: TK_WRITE . '(' E ')'
+
+    '('  deslocar, e ir ao estado 57
+
+
+State 34
+
+   25 CMD: VARS .
+
+    $padrão  reduzir usando a regra 25 (CMD)
+
+
+State 35
+
+   24 CMD: BLOCO .
+
+    $padrão  reduzir usando a regra 24 (CMD)
+
+
+State 36
+
+   17 BLOCO: TK_BEGIN $@1 CMDS . TK_END
+
+    TK_END  deslocar, e ir ao estado 58
+
+
+State 37
+
+   18 CMDS: CMD . ';' CMDS
+
+    ';'  deslocar, e ir ao estado 59
+
+
+State 38
+
+   19 CMDS: LOOP . CMDS
+
+    TK_BEGIN    deslocar, e ir ao estado 20
+    TK_IF       deslocar, e ir ao estado 29
+    TK_FOR      deslocar, e ir ao estado 30
+    TK_INT      deslocar, e ir ao estado 6
+    TK_CHAR     deslocar, e ir ao estado 7
+    TK_BOOL     deslocar, e ir ao estado 8
+    TK_DOUBLE   deslocar, e ir ao estado 9
+    TK_STRING   deslocar, e ir ao estado 10
+    TK_ID       deslocar, e ir ao estado 31
+    TK_WRITELN  deslocar, e ir ao estado 32
+    TK_WRITE    deslocar, e ir ao estado 33
+
+    TK_END    reduzir usando a regra 20 (CMDS)
+    $padrão  reduzir usando a regra 4 (VARS)
+
+    VARS     ir ao estado 34
+    VAR      ir ao estado 12
+    TIPO     ir ao estado 13
+    BLOCO    ir ao estado 35
+    CMDS     ir ao estado 60
+    CMD      ir ao estado 37
+    LOOP     ir ao estado 38
+    CMD_FOR  ir ao estado 39
+    CMD_IF   ir ao estado 40
+    WRITELN  ir ao estado 41
+    WRITE    ir ao estado 42
+    ATRIB    ir ao estado 43
+
+
+State 39
+
+   27 LOOP: CMD_FOR .
+
+    $padrão  reduzir usando a regra 27 (LOOP)
+
+
+State 40
+
+   26 LOOP: CMD_IF .
+
+    $padrão  reduzir usando a regra 26 (LOOP)
+
+
+State 41
+
+   22 CMD: WRITELN .
+
+    $padrão  reduzir usando a regra 22 (CMD)
+
+
+State 42
+
+   21 CMD: WRITE .
+
+    $padrão  reduzir usando a regra 21 (CMD)
+
+
+State 43
+
+   23 CMD: ATRIB .
+
+    $padrão  reduzir usando a regra 23 (CMD)
+
+
+State 44
+
+    6 VAR: TIPO IDS '[' TK_INTEIRO TK_PTPT . TK_INTEIRO ']'
+    7    | TIPO IDS '[' TK_INTEIRO TK_PTPT . TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+
+    TK_INTEIRO  deslocar, e ir ao estado 61
+
+
+State 45
+
+   53 F: TK_TEXTO .
+
+    $padrão  reduzir usando a regra 53 (F)
+
+
+State 46
+
+   54 NOME_VAR: TK_ID .
+   55         | TK_ID . '[' E ']'
+   56         | TK_ID . '[' E ']' '[' E ']'
+
+    '['  deslocar, e ir ao estado 62
+
+    $padrão  reduzir usando a regra 54 (NOME_VAR)
+
+
+State 47
+
+   51 F: TK_INTEIRO .
+
+    $padrão  reduzir usando a regra 51 (F)
+
+
+State 48
+
+   52 F: TK_REAL .
+
+    $padrão  reduzir usando a regra 52 (F)
+
+
+State 49
+
+   48 E: '(' . E ')'
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 63
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 50
+
+   29 CMD_IF: TK_IF E . TK_BEGIN CMDS TK_END
+   30       | TK_IF E . TK_BEGIN CMDS TK_END TK_ELSE TK_BEGIN CMDS TK_END
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_BEGIN  deslocar, e ir ao estado 64
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+
+State 51
+
+   49 E: F .
+
+    $padrão  reduzir usando a regra 49 (E)
+
+
+State 52
+
+   50 F: NOME_VAR .
+
+    $padrão  reduzir usando a regra 50 (F)
+
+
+State 53
+
+   28 CMD_FOR: TK_FOR NOME_VAR . TK_ATRIB E TK_PTPT E TK_BEGIN CMDS TK_END
+
+    TK_ATRIB  deslocar, e ir ao estado 77
+
+
+State 54
+
+   33 ATRIB: TK_ID TK_ATRIB . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 78
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 55
+
+   34 ATRIB: TK_ID '[' . E ']' TK_ATRIB E
+   35      | TK_ID '[' . E ']' '[' E ']' TK_ATRIB E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 79
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 56
+
+   31 WRITELN: TK_WRITELN '(' . E ')'
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 80
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 57
+
+   32 WRITE: TK_WRITE '(' . E ')'
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 81
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 58
+
+   17 BLOCO: TK_BEGIN $@1 CMDS TK_END .
+
+    $padrão  reduzir usando a regra 17 (BLOCO)
+
+
+State 59
+
+   18 CMDS: CMD ';' . CMDS
+
+    TK_BEGIN    deslocar, e ir ao estado 20
+    TK_IF       deslocar, e ir ao estado 29
+    TK_FOR      deslocar, e ir ao estado 30
+    TK_INT      deslocar, e ir ao estado 6
+    TK_CHAR     deslocar, e ir ao estado 7
+    TK_BOOL     deslocar, e ir ao estado 8
+    TK_DOUBLE   deslocar, e ir ao estado 9
+    TK_STRING   deslocar, e ir ao estado 10
+    TK_ID       deslocar, e ir ao estado 31
+    TK_WRITELN  deslocar, e ir ao estado 32
+    TK_WRITE    deslocar, e ir ao estado 33
+
+    TK_END    reduzir usando a regra 20 (CMDS)
+    $padrão  reduzir usando a regra 4 (VARS)
+
+    VARS     ir ao estado 34
+    VAR      ir ao estado 12
+    TIPO     ir ao estado 13
+    BLOCO    ir ao estado 35
+    CMDS     ir ao estado 82
+    CMD      ir ao estado 37
+    LOOP     ir ao estado 38
+    CMD_FOR  ir ao estado 39
+    CMD_IF   ir ao estado 40
+    WRITELN  ir ao estado 41
+    WRITE    ir ao estado 42
+    ATRIB    ir ao estado 43
+
+
+State 60
+
+   19 CMDS: LOOP CMDS .
+
+    $padrão  reduzir usando a regra 19 (CMDS)
+
+
+State 61
+
+    6 VAR: TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO . ']'
+    7    | TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO . ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+
+    ']'  deslocar, e ir ao estado 83
+
+
+State 62
+
+   55 NOME_VAR: TK_ID '[' . E ']'
+   56         | TK_ID '[' . E ']' '[' E ']'
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 84
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 63
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+   48  | '(' E . ')'
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+    ')'       deslocar, e ir ao estado 85
+
+
+State 64
+
+   29 CMD_IF: TK_IF E TK_BEGIN . CMDS TK_END
+   30       | TK_IF E TK_BEGIN . CMDS TK_END TK_ELSE TK_BEGIN CMDS TK_END
+
+    TK_BEGIN    deslocar, e ir ao estado 20
+    TK_IF       deslocar, e ir ao estado 29
+    TK_FOR      deslocar, e ir ao estado 30
+    TK_INT      deslocar, e ir ao estado 6
+    TK_CHAR     deslocar, e ir ao estado 7
+    TK_BOOL     deslocar, e ir ao estado 8
+    TK_DOUBLE   deslocar, e ir ao estado 9
+    TK_STRING   deslocar, e ir ao estado 10
+    TK_ID       deslocar, e ir ao estado 31
+    TK_WRITELN  deslocar, e ir ao estado 32
+    TK_WRITE    deslocar, e ir ao estado 33
+
+    TK_END    reduzir usando a regra 20 (CMDS)
+    $padrão  reduzir usando a regra 4 (VARS)
+
+    VARS     ir ao estado 34
+    VAR      ir ao estado 12
+    TIPO     ir ao estado 13
+    BLOCO    ir ao estado 35
+    CMDS     ir ao estado 86
+    CMD      ir ao estado 37
+    LOOP     ir ao estado 38
+    CMD_FOR  ir ao estado 39
+    CMD_IF   ir ao estado 40
+    WRITELN  ir ao estado 41
+    WRITE    ir ao estado 42
+    ATRIB    ir ao estado 43
+
+
+State 65
+
+   43 E: E TK_MAIG . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 87
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 66
+
+   42 E: E TK_MEIG . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 88
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 67
+
+   45 E: E TK_DIF . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 89
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 68
+
+   44 E: E TK_EQUAL . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 90
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 69
+
+   46 E: E TK_AND . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 91
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 70
+
+   47 E: E TK_OR . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 92
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 71
+
+   40 E: E '<' . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 93
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 72
+
+   41 E: E '>' . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 94
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 73
+
+   36 E: E '+' . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 95
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 74
+
+   37 E: E '-' . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 96
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 75
+
+   38 E: E '*' . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 97
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 76
+
+   39 E: E '/' . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 98
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 77
+
+   28 CMD_FOR: TK_FOR NOME_VAR TK_ATRIB . E TK_PTPT E TK_BEGIN CMDS TK_END
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 99
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 78
+
+   33 ATRIB: TK_ID TK_ATRIB E .
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    $padrão  reduzir usando a regra 33 (ATRIB)
+
+
+State 79
+
+   34 ATRIB: TK_ID '[' E . ']' TK_ATRIB E
+   35      | TK_ID '[' E . ']' '[' E ']' TK_ATRIB E
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+    ']'       deslocar, e ir ao estado 100
+
+
+State 80
+
+   31 WRITELN: TK_WRITELN '(' E . ')'
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+    ')'       deslocar, e ir ao estado 101
+
+
+State 81
+
+   32 WRITE: TK_WRITE '(' E . ')'
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+    ')'       deslocar, e ir ao estado 102
+
+
+State 82
+
+   18 CMDS: CMD ';' CMDS .
+
+    $padrão  reduzir usando a regra 18 (CMDS)
+
+
+State 83
+
+    6 VAR: TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' .
+    7    | TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' . '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+
+    '['  deslocar, e ir ao estado 103
+
+    $padrão  reduzir usando a regra 6 (VAR)
+
+
+State 84
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+   55 NOME_VAR: TK_ID '[' E . ']'
+   56         | TK_ID '[' E . ']' '[' E ']'
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+    ']'       deslocar, e ir ao estado 104
+
+
+State 85
+
+   48 E: '(' E ')' .
+
+    $padrão  reduzir usando a regra 48 (E)
+
+
+State 86
+
+   29 CMD_IF: TK_IF E TK_BEGIN CMDS . TK_END
+   30       | TK_IF E TK_BEGIN CMDS . TK_END TK_ELSE TK_BEGIN CMDS TK_END
+
+    TK_END  deslocar, e ir ao estado 105
+
+
+State 87
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   43  | E TK_MAIG E .
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_MAIG  erro (não associativo)
+    TK_MEIG  erro (não associativo)
+    TK_DIF   erro (não associativo)
+    '<'      erro (não associativo)
+    '>'      erro (não associativo)
+
+    TK_EQUAL  [reduzir usando a regra 43 (E)]
+    TK_OR     [reduzir usando a regra 43 (E)]
+    $padrão  reduzir usando a regra 43 (E)
+
+
+State 88
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   42  | E TK_MEIG E .
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_MAIG  erro (não associativo)
+    TK_MEIG  erro (não associativo)
+    TK_DIF   erro (não associativo)
+    '<'      erro (não associativo)
+    '>'      erro (não associativo)
+
+    TK_EQUAL  [reduzir usando a regra 42 (E)]
+    TK_OR     [reduzir usando a regra 42 (E)]
+    $padrão  reduzir usando a regra 42 (E)
+
+
+State 89
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   45  | E TK_DIF E .
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_MAIG  erro (não associativo)
+    TK_MEIG  erro (não associativo)
+    TK_DIF   erro (não associativo)
+    '<'      erro (não associativo)
+    '>'      erro (não associativo)
+
+    TK_EQUAL  [reduzir usando a regra 45 (E)]
+    TK_OR     [reduzir usando a regra 45 (E)]
+    $padrão  reduzir usando a regra 45 (E)
+
+
+State 90
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   44  | E TK_EQUAL E .
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_MAIG   [reduzir usando a regra 44 (E)]
+    TK_MEIG   [reduzir usando a regra 44 (E)]
+    TK_DIF    [reduzir usando a regra 44 (E)]
+    TK_EQUAL  [reduzir usando a regra 44 (E)]
+    TK_AND    [reduzir usando a regra 44 (E)]
+    TK_OR     [reduzir usando a regra 44 (E)]
+    '<'       [reduzir usando a regra 44 (E)]
+    '>'       [reduzir usando a regra 44 (E)]
+    '+'       [reduzir usando a regra 44 (E)]
+    '-'       [reduzir usando a regra 44 (E)]
+    '*'       [reduzir usando a regra 44 (E)]
+    '/'       [reduzir usando a regra 44 (E)]
+    $padrão  reduzir usando a regra 44 (E)
+
+
+State 91
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   46  | E TK_AND E .
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_EQUAL  [reduzir usando a regra 46 (E)]
+    TK_OR     [reduzir usando a regra 46 (E)]
+    $padrão  reduzir usando a regra 46 (E)
+
+
+State 92
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+   47  | E TK_OR E .
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_MAIG   [reduzir usando a regra 47 (E)]
+    TK_MEIG   [reduzir usando a regra 47 (E)]
+    TK_DIF    [reduzir usando a regra 47 (E)]
+    TK_EQUAL  [reduzir usando a regra 47 (E)]
+    TK_AND    [reduzir usando a regra 47 (E)]
+    TK_OR     [reduzir usando a regra 47 (E)]
+    '<'       [reduzir usando a regra 47 (E)]
+    '>'       [reduzir usando a regra 47 (E)]
+    '+'       [reduzir usando a regra 47 (E)]
+    '-'       [reduzir usando a regra 47 (E)]
+    '*'       [reduzir usando a regra 47 (E)]
+    '/'       [reduzir usando a regra 47 (E)]
+    $padrão  reduzir usando a regra 47 (E)
+
+
+State 93
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   40  | E '<' E .
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_MAIG  erro (não associativo)
+    TK_MEIG  erro (não associativo)
+    TK_DIF   erro (não associativo)
+    '<'      erro (não associativo)
+    '>'      erro (não associativo)
+
+    TK_EQUAL  [reduzir usando a regra 40 (E)]
+    TK_OR     [reduzir usando a regra 40 (E)]
+    $padrão  reduzir usando a regra 40 (E)
+
+
+State 94
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   41  | E '>' E .
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_MAIG  erro (não associativo)
+    TK_MEIG  erro (não associativo)
+    TK_DIF   erro (não associativo)
+    '<'      erro (não associativo)
+    '>'      erro (não associativo)
+
+    TK_EQUAL  [reduzir usando a regra 41 (E)]
+    TK_OR     [reduzir usando a regra 41 (E)]
+    $padrão  reduzir usando a regra 41 (E)
+
+
+State 95
+
+   36 E: E . '+' E
+   36  | E '+' E .
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_EQUAL  [reduzir usando a regra 36 (E)]
+    TK_OR     [reduzir usando a regra 36 (E)]
+    $padrão  reduzir usando a regra 36 (E)
+
+
+State 96
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   37  | E '-' E .
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    TK_EQUAL  [reduzir usando a regra 37 (E)]
+    TK_OR     [reduzir usando a regra 37 (E)]
+    $padrão  reduzir usando a regra 37 (E)
+
+
+State 97
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   38  | E '*' E .
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+
+    TK_EQUAL  [reduzir usando a regra 38 (E)]
+    TK_OR     [reduzir usando a regra 38 (E)]
+    $padrão  reduzir usando a regra 38 (E)
+
+
+State 98
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   39  | E '/' E .
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_OR     deslocar, e ir ao estado 70
+
+    TK_EQUAL  [reduzir usando a regra 39 (E)]
+    TK_OR     [reduzir usando a regra 39 (E)]
+    $padrão  reduzir usando a regra 39 (E)
+
+
+State 99
+
+   28 CMD_FOR: TK_FOR NOME_VAR TK_ATRIB E . TK_PTPT E TK_BEGIN CMDS TK_END
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    TK_PTPT   deslocar, e ir ao estado 106
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+
+State 100
+
+   34 ATRIB: TK_ID '[' E ']' . TK_ATRIB E
+   35      | TK_ID '[' E ']' . '[' E ']' TK_ATRIB E
+
+    TK_ATRIB  deslocar, e ir ao estado 107
+    '['       deslocar, e ir ao estado 108
+
+
+State 101
+
+   31 WRITELN: TK_WRITELN '(' E ')' .
+
+    $padrão  reduzir usando a regra 31 (WRITELN)
+
+
+State 102
+
+   32 WRITE: TK_WRITE '(' E ')' .
+
+    $padrão  reduzir usando a regra 32 (WRITE)
+
+
+State 103
+
+    7 VAR: TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' . TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+
+    TK_INTEIRO  deslocar, e ir ao estado 109
+
+
+State 104
+
+   55 NOME_VAR: TK_ID '[' E ']' .
+   56         | TK_ID '[' E ']' . '[' E ']'
+
+    '['  deslocar, e ir ao estado 110
+
+    $padrão  reduzir usando a regra 55 (NOME_VAR)
+
+
+State 105
+
+   29 CMD_IF: TK_IF E TK_BEGIN CMDS TK_END .
+   30       | TK_IF E TK_BEGIN CMDS TK_END . TK_ELSE TK_BEGIN CMDS TK_END
+
+    TK_ELSE  deslocar, e ir ao estado 111
+
+    $padrão  reduzir usando a regra 29 (CMD_IF)
+
+
+State 106
+
+   28 CMD_FOR: TK_FOR NOME_VAR TK_ATRIB E TK_PTPT . E TK_BEGIN CMDS TK_END
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 112
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 107
+
+   34 ATRIB: TK_ID '[' E ']' TK_ATRIB . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 113
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 108
+
+   35 ATRIB: TK_ID '[' E ']' '[' . E ']' TK_ATRIB E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 114
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 109
+
+    7 VAR: TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO . TK_PTPT TK_INTEIRO ']'
+
+    TK_PTPT  deslocar, e ir ao estado 115
+
+
+State 110
+
+   56 NOME_VAR: TK_ID '[' E ']' '[' . E ']'
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 116
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 111
+
+   30 CMD_IF: TK_IF E TK_BEGIN CMDS TK_END TK_ELSE . TK_BEGIN CMDS TK_END
+
+    TK_BEGIN  deslocar, e ir ao estado 117
+
+
+State 112
+
+   28 CMD_FOR: TK_FOR NOME_VAR TK_ATRIB E TK_PTPT E . TK_BEGIN CMDS TK_END
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_BEGIN  deslocar, e ir ao estado 118
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+
+State 113
+
+   34 ATRIB: TK_ID '[' E ']' TK_ATRIB E .
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    $padrão  reduzir usando a regra 34 (ATRIB)
+
+
+State 114
+
+   35 ATRIB: TK_ID '[' E ']' '[' E . ']' TK_ATRIB E
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+    ']'       deslocar, e ir ao estado 119
+
+
+State 115
+
+    7 VAR: TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT . TK_INTEIRO ']'
+
+    TK_INTEIRO  deslocar, e ir ao estado 120
+
+
+State 116
+
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+   56 NOME_VAR: TK_ID '[' E ']' '[' E . ']'
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+    ']'       deslocar, e ir ao estado 121
+
+
+State 117
+
+   30 CMD_IF: TK_IF E TK_BEGIN CMDS TK_END TK_ELSE TK_BEGIN . CMDS TK_END
+
+    TK_BEGIN    deslocar, e ir ao estado 20
+    TK_IF       deslocar, e ir ao estado 29
+    TK_FOR      deslocar, e ir ao estado 30
+    TK_INT      deslocar, e ir ao estado 6
+    TK_CHAR     deslocar, e ir ao estado 7
+    TK_BOOL     deslocar, e ir ao estado 8
+    TK_DOUBLE   deslocar, e ir ao estado 9
+    TK_STRING   deslocar, e ir ao estado 10
+    TK_ID       deslocar, e ir ao estado 31
+    TK_WRITELN  deslocar, e ir ao estado 32
+    TK_WRITE    deslocar, e ir ao estado 33
+
+    TK_END    reduzir usando a regra 20 (CMDS)
+    $padrão  reduzir usando a regra 4 (VARS)
+
+    VARS     ir ao estado 34
+    VAR      ir ao estado 12
+    TIPO     ir ao estado 13
+    BLOCO    ir ao estado 35
+    CMDS     ir ao estado 122
+    CMD      ir ao estado 37
+    LOOP     ir ao estado 38
+    CMD_FOR  ir ao estado 39
+    CMD_IF   ir ao estado 40
+    WRITELN  ir ao estado 41
+    WRITE    ir ao estado 42
+    ATRIB    ir ao estado 43
+
+
+State 118
+
+   28 CMD_FOR: TK_FOR NOME_VAR TK_ATRIB E TK_PTPT E TK_BEGIN . CMDS TK_END
+
+    TK_BEGIN    deslocar, e ir ao estado 20
+    TK_IF       deslocar, e ir ao estado 29
+    TK_FOR      deslocar, e ir ao estado 30
+    TK_INT      deslocar, e ir ao estado 6
+    TK_CHAR     deslocar, e ir ao estado 7
+    TK_BOOL     deslocar, e ir ao estado 8
+    TK_DOUBLE   deslocar, e ir ao estado 9
+    TK_STRING   deslocar, e ir ao estado 10
+    TK_ID       deslocar, e ir ao estado 31
+    TK_WRITELN  deslocar, e ir ao estado 32
+    TK_WRITE    deslocar, e ir ao estado 33
+
+    TK_END    reduzir usando a regra 20 (CMDS)
+    $padrão  reduzir usando a regra 4 (VARS)
+
+    VARS     ir ao estado 34
+    VAR      ir ao estado 12
+    TIPO     ir ao estado 13
+    BLOCO    ir ao estado 35
+    CMDS     ir ao estado 123
+    CMD      ir ao estado 37
+    LOOP     ir ao estado 38
+    CMD_FOR  ir ao estado 39
+    CMD_IF   ir ao estado 40
+    WRITELN  ir ao estado 41
+    WRITE    ir ao estado 42
+    ATRIB    ir ao estado 43
+
+
+State 119
+
+   35 ATRIB: TK_ID '[' E ']' '[' E ']' . TK_ATRIB E
+
+    TK_ATRIB  deslocar, e ir ao estado 124
+
+
+State 120
+
+    7 VAR: TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO . ']'
+
+    ']'  deslocar, e ir ao estado 125
+
+
+State 121
+
+   56 NOME_VAR: TK_ID '[' E ']' '[' E ']' .
+
+    $padrão  reduzir usando a regra 56 (NOME_VAR)
+
+
+State 122
+
+   30 CMD_IF: TK_IF E TK_BEGIN CMDS TK_END TK_ELSE TK_BEGIN CMDS . TK_END
+
+    TK_END  deslocar, e ir ao estado 126
+
+
+State 123
+
+   28 CMD_FOR: TK_FOR NOME_VAR TK_ATRIB E TK_PTPT E TK_BEGIN CMDS . TK_END
+
+    TK_END  deslocar, e ir ao estado 127
+
+
+State 124
+
+   35 ATRIB: TK_ID '[' E ']' '[' E ']' TK_ATRIB . E
+
+    TK_TEXTO    deslocar, e ir ao estado 45
+    TK_ID       deslocar, e ir ao estado 46
+    TK_INTEIRO  deslocar, e ir ao estado 47
+    TK_REAL     deslocar, e ir ao estado 48
+    '('         deslocar, e ir ao estado 49
+
+    E         ir ao estado 128
+    F         ir ao estado 51
+    NOME_VAR  ir ao estado 52
+
+
+State 125
+
+    7 VAR: TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' .
+
+    $padrão  reduzir usando a regra 7 (VAR)
+
+
+State 126
+
+   30 CMD_IF: TK_IF E TK_BEGIN CMDS TK_END TK_ELSE TK_BEGIN CMDS TK_END .
+
+    $padrão  reduzir usando a regra 30 (CMD_IF)
+
+
+State 127
+
+   28 CMD_FOR: TK_FOR NOME_VAR TK_ATRIB E TK_PTPT E TK_BEGIN CMDS TK_END .
+
+    $padrão  reduzir usando a regra 28 (CMD_FOR)
+
+
+State 128
+
+   35 ATRIB: TK_ID '[' E ']' '[' E ']' TK_ATRIB E .
+   36 E: E . '+' E
+   37  | E . '-' E
+   38  | E . '*' E
+   39  | E . '/' E
+   40  | E . '<' E
+   41  | E . '>' E
+   42  | E . TK_MEIG E
+   43  | E . TK_MAIG E
+   44  | E . TK_EQUAL E
+   45  | E . TK_DIF E
+   46  | E . TK_AND E
+   47  | E . TK_OR E
+
+    TK_MAIG   deslocar, e ir ao estado 65
+    TK_MEIG   deslocar, e ir ao estado 66
+    TK_DIF    deslocar, e ir ao estado 67
+    TK_EQUAL  deslocar, e ir ao estado 68
+    TK_AND    deslocar, e ir ao estado 69
+    TK_OR     deslocar, e ir ao estado 70
+    '<'       deslocar, e ir ao estado 71
+    '>'       deslocar, e ir ao estado 72
+    '+'       deslocar, e ir ao estado 73
+    '-'       deslocar, e ir ao estado 74
+    '*'       deslocar, e ir ao estado 75
+    '/'       deslocar, e ir ao estado 76
+
+    $padrão  reduzir usando a regra 35 (ATRIB)
