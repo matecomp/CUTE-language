@@ -27,6 +27,7 @@ COMENTARIO "(*"([^*]|"*"[^)])*"*)"
 "boolzinho"	{ yylval = Atributos( yytext); return TK_BOOL; }
 "dbzinho"  	{ yylval = Atributos( yytext); return TK_DOUBLE; }
 "txtzinho" 	{ yylval = Atributos( yytext); return TK_STRING; }
+"funcaozinha" 	{ yylval = Atributos( yytext); return TK_FUNCTION; }
 "ifinho"  	{ yylval = Atributos( yytext); return TK_IF; }
 "elsinho"  	{ yylval = Atributos( yytext); return TK_ELSE; }
 "forzinho"  	{ yylval = Atributos( yytext); return TK_FOR; }
@@ -39,6 +40,7 @@ COMENTARIO "(*"([^*]|"*"[^)])*"*)"
 ":]"		{ yylval = Atributos( yytext); return TK_END; }
 "inicinho"	{ yylval = Atributos( yytext); return TK_MBEGIN; }
 "finzinho"	{ yylval = Atributos( yytext); return TK_MEND; }
+"retorninho"	{ yylval = Atributos( yytext); return TK_RETURN; }
 
 
 ".."	   { yylval = Atributos( yytext ); return TK_PTPT; }
