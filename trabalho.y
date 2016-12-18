@@ -56,7 +56,7 @@ struct Tipo {
     this->fim[1] = fim_2;
   }
   
-  Tipo( Tipo retorno, vector<Tipo> params ) {
+  Tipo( Tipo retorno, const vector<Tipo> params ) {
     ndim = FUNCAO;
     this->retorno.push_back( retorno );
     this->params = params;
@@ -103,7 +103,8 @@ string toString( int n );
 Atributos gera_codigo_operador( Atributos s1, string opr, Atributos s3 );
 Atributos gera_codigo_if( Atributos expr, string cmd_then, string cmd_else );
 
-string traduz_nome_tipo_variavel( string tipo_pascal );
+string traduz_nome_tipo_variavel( string tipo_cute );
+string traduz_nome_tipo_cute( string tipo_lex );
 
 string includes = 
 "#include <iostream>\n"
@@ -249,9 +250,8 @@ CORPO : TK_BEGIN { var_temp.push_back( "" );} CMDS RETURN TK_END
       ; 
 
 CABECALHO : TIPO TK_ID OPC_PARAM
-            { 
+            {
               Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ) );
-              insere_funcao_ts( $2.v, tipo, $3.lista_tipo );
               $$.c = declara_funcao( $2.v, tipo, $3.lista_str, $3.lista_tipo );
             }
           ;
@@ -360,23 +360,34 @@ ATRIB : TK_ID TK_ATRIB E
           
           if( $1.t.tipo_base == "s" ) 
             $$.c = $3.c + "  strncpy( " + $1.v + ", " + $3.v + ", 256 );\n";
-          else
+          else if( $1.t.tipo_base == $3.t.tipo_base )
             $$.c = $3.c + "  " + $1.v + " = " + $3.v + ";\n";             
+          else
+            erro( "Erro de atribuicao... tipos diferentes.\n"
+	      "Variavel do tipo: "+ traduz_nome_tipo_cute($1.t.tipo_base) + ".\n"
+	      "Valor do tipo: "+ traduz_nome_tipo_cute($3.t.tipo_base) + "." );
 
         } 
       | TK_ID '[' E ']' TK_ATRIB E
-        { // Falta testar: tipo, limite do array, e se a variável existe
+        { 
           $1.t = consulta_var_ts( $1.v ) ;
           if( $1.t.tipo_base != $6.t.tipo_base ) {
-             erro( "Atribuicao entre tipos diferentes" );
+            erro( "Erro de atribuicao... tipos diferentes.\n"
+	      "Variavel do tipo: "+ traduz_nome_tipo_cute($1.t.tipo_base) + ".\n"
+	      "Valor do tipo: "+ traduz_nome_tipo_cute($6.t.tipo_base) + "." );
           }
           $$.c = $3.c + $6.c +
                  gera_teste_limite_array( $1.t, $3.v ) +   
                  "  " + $1.v + "[" + $3.v + "] = " + $6.v + ";\n";
         }
       | TK_ID '[' E ']' '[' E ']' TK_ATRIB E
-        { // Falta testar: tipo, limite do array, e se a variável existe
+        { 
           $1.t = consulta_var_ts( $1.v ) ;
+          if( $1.t.tipo_base != $9.t.tipo_base ) {
+            erro( "Erro de atribuicao... tipos diferentes.\n"
+	      "Variavel do tipo: "+ traduz_nome_tipo_cute($1.t.tipo_base) + ".\n"
+	      "Valor do tipo: "+ traduz_nome_tipo_cute($9.t.tipo_base) + "." );
+          }
           string aux = gera_nome_var_temp( $3.t.tipo_base );
 		  string tam = toString($1.t.fim[1] - $1.t.inicio[1] + 1);
           $$.c = $3.c + $6.c + $9.c +
@@ -430,11 +441,14 @@ EXPRS : EXPRS ',' E
         { $$ = Atributos();
           $$.c = $1.c + $3.c;
           $$.lista_str = $1.lista_str;
-          $$.lista_str.push_back( $3.v ); }
+          $$.lista_tipo = $1.lista_tipo;
+          $$.lista_str.push_back( $3.v );
+          $$.lista_tipo.push_back( $3.t );  }
       | E 
         { $$ = Atributos();
           $$.c = $1.c;
-          $$.lista_str.push_back( $1.v ); }
+          $$.lista_str.push_back( $1.v ); 
+          $$.lista_tipo.push_back( $1.t ); }
       ;  
   
 NOME_VAR : TK_ID 
@@ -442,7 +456,7 @@ NOME_VAR : TK_ID
          | TK_ID '[' E ']'  
          { 
            Tipo tipoArray = consulta_var_ts( $1.v );
-           $$.t = Tipo( tipoArray.tipo_base );
+           $$.t = tipoArray;
            if( tipoArray.ndim != VETOR )
              erro( "Variável " + $1.v + " não é array de uma dimensão" );
         
@@ -458,7 +472,8 @@ NOME_VAR : TK_ID
           | TK_ID '[' E ']' '[' E ']'
           { 
             Tipo tipoArray = consulta_var_ts( $1.v );
-            $$.t = Tipo( tipoArray.tipo_base );
+            
+            $$.t = tipoArray;
             if( tipoArray.ndim != MATRIZ )
               erro( "Variável " + $1.v + " não é array de duas dimensões" );
         
@@ -467,7 +482,7 @@ NOME_VAR : TK_ID
                 $3.t.tipo_base + "/" + toString( $3.t.ndim ) );
 
             string aux = gera_nome_var_temp( $6.t.tipo_base );
-		    string tam = toString(tipoArray.fim[1]-tipoArray.inicio[1]+1);
+	    string tam = toString(tipoArray.fim[1]-tipoArray.inicio[1]+1);
             $$.v = gera_nome_var_temp( $$.t.tipo_base );
             $$.c = $3.c +
               gera_teste_limite_array( tipoArray, $3.v, $6.v ) +   
@@ -477,15 +492,38 @@ NOME_VAR : TK_ID
           }
           | TK_ID '(' EXPRS ')' 
             { 
-              //Tipo tipoArray = consulta_var_ts( $1.v );
-              $$.t = Tipo( "i" );
-              // consulta_var_ts( $1.v );
-              // Falta verficar o tipo da função e os parametros.
-              $$.v = gera_nome_var_temp( $$.t.tipo_base ); 
+              Tipo tipoArray = consulta_var_ts( $1.v );
+              $$.t = tipoArray;
+
+              $$.v = gera_nome_var_temp( $$.t.tipo_base );
+
+              // Verifica se o tipo do argumento fornecido esta correto
               $$.c = $3.c + "  " + $$.v + " = " + $1.v + "( ";
-      
-              for( int i = 0; i < $3.lista_str.size() - 1; i++ )
+              string error_string = "Argumento invalido, funcao "+$1.v+"(";
+              string aux1, aux2;
+              bool error_flag = false;
+              for( int i = 0; i < $3.lista_tipo.size(); i++ ){
+	        aux1 = traduz_nome_tipo_cute($$.t.params[i].tipo_base);
+                aux2 = $3.lista_str[i];
+
+                if( $3.lista_tipo[i].tipo_base != $$.t.params[i].tipo_base ){
+                  error_flag = true;
+                  aux2 = "???";
+                }
+
+                error_string += " " + aux1 + " " + aux2;
+                if( i < $3.lista_tipo.size() - 1 )
+                  error_string += ",";
+              }
+              error_string += " );";
+              if( error_flag )
+                erro( error_string );
+
+
+              //Monta o codigo da chamada da funcao em C assembly
+              for( int i = 0; i < $3.lista_str.size() - 1; i++ ){
                 $$.c += $3.lista_str[i] + ", ";
+              }
         
               $$.c += $3.lista_str[$3.lista_str.size()-1] + " );\n"; 
             }
@@ -630,12 +668,12 @@ Tipo consulta_var_ts( string nome_var ) {
   return Tipo();
 }
 
-Tipo consulta_funcao_ts( string nome_var ) {
+Tipo consulta_funcao_ts( string nome_func ) {
   for( int i = ts.size()-1; i >= 0; i-- )
-    if( ts[i].find( nome_var ) != ts[i].end() )
-      return ts[i][ nome_var ];
+    if( ts[i].find( nome_func ) != ts[i].end() )
+      return ts[i][ nome_func ];
     
-  erro( "Funcao não declarada: " + nome_var );
+  erro( "Funcao não declarada: " + nome_func );
   
   return Tipo();
 }
@@ -648,11 +686,16 @@ void insere_var_ts( string nome_var, Tipo tipo ) {
   ts[ts.size()-1][ nome_var ] = tipo;
 }
 
-void insere_funcao_ts( string nome_func, Tipo retorno, vector<Tipo> params ) {
+void insere_funcao_ts( string nome_func, 
+                       Tipo retorno, vector<Tipo> params ) {
   if( ts[ts.size()-2].find( nome_func ) != ts[ts.size()-2].end() )
     erro( "Função já declarada: " + nome_func );
     
-  ts[ts.size()-2][ nome_func ] = Tipo( retorno, params );
+  Tipo aux = Tipo( retorno );
+  aux.retorno.push_back( Tipo( retorno ) );
+  aux.params = params;
+  ts[ts.size()-2][ nome_func ] = aux;
+
 }
 
 string toString( int n ) {
@@ -742,22 +785,37 @@ Atributos gera_codigo_if( Atributos expr, string cmd_then, string cmd_else ) {
   return ss;       
 }
 
+string traduz_nome_tipo_cute( string tipo_lex ) {
+  
+  if( tipo_lex == "i" )
+    return "intinho";
+  else if( tipo_lex == "b" )
+    return "boolzinho";
+  else if( tipo_lex == "d" )
+    return "dbzinho";  
+  else if( tipo_lex == "c" )
+    return "charzinho";  
+  else if( tipo_lex == "s" )
+    return "txtzinho";  
+  else 
+    erro( "Tipo inválido: " + tipo_lex );
+}
 
-string traduz_nome_tipo_variavel( string tipo_pascal ) {
+string traduz_nome_tipo_variavel( string tipo_cute ) {
   // No caso do Pascal, a comparacao deveria ser case-insensitive
   
-  if( tipo_pascal == "intinho" )
+  if( tipo_cute == "intinho" )
     return "i";
-  else if( tipo_pascal == "boolzinho" )
+  else if( tipo_cute == "boolzinho" )
     return "b";
-  else if( tipo_pascal == "dbzinho" )
+  else if( tipo_cute == "dbzinho" )
     return "d";  
-  else if( tipo_pascal == "charzinho" )
+  else if( tipo_cute == "charzinho" )
     return "c";  
-  else if( tipo_pascal == "txtzinho" )
+  else if( tipo_cute == "txtzinho" )
     return "s";  
   else 
-    erro( "Tipo inválido: " + tipo_pascal );
+    erro( "Tipo inválido: " + tipo_cute );
 }
 
 map<string, string> inicializaMapEmC() {
@@ -773,7 +831,7 @@ map<string, string> inicializaMapEmC() {
 string declara_var( string nome, Tipo tipo, bool ln ) {
   static map<string, string> em_C = inicializaMapEmC();
   
-  if( em_C[ tipo.tipo_base ] == "" ) 
+  if( em_C[ tipo.tipo_base ] == "" )
     erro( "Tipo inválido: " + tipo.tipo_base );
     
   string indice;
@@ -807,6 +865,7 @@ string declara_funcao( string nome, Tipo tipo,
                        vector<string> nomes, vector<Tipo> tipos ) {
   static map<string, string> em_C = inicializaMapEmC();
 
+  insere_funcao_ts( nome, tipo, tipos );
   if( em_C[ tipo.tipo_base ] == "" ) 
     erro( "Tipo inválido: " + tipo.tipo_base );
     
@@ -818,7 +877,7 @@ string declara_funcao( string nome, Tipo tipo,
   string aux = " ";
   
   for( int i = 0; i < nomes.size(); i++ ) {
-    aux += declara_var( nomes[i], tipos[i], false ) + 
+    aux += declara_var( nomes[i], tipos[i], false) + 
            (i == nomes.size()-1 ? " " : ", ");  
     insere_var_ts( nomes[i], tipos[i] );  
   }

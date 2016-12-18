@@ -29,8 +29,7 @@ inicinho[:
 		printinln('');
 	:]
 
-	i = MDC(2, 5);
+	i = MDC(80, 80);
 	printinln(i);
-	printinln(MDC(55, 1000));
 
 :]finzinho

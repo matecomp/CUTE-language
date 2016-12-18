@@ -55,7 +55,6 @@ int tb_37;
 int ti_38;
 int tb_39;
 int ti_40;
-int ti_41;
 int i;
 int j;
   i = 0;
@@ -150,12 +149,9 @@ l_fim_for_10:;
   i = i + 1;
   goto l_teste_for_11;
 l_fim_for_12:;
-  ti_40 = MDC( 2, 5 );
+  ti_40 = MDC( 80, 80 );
   i = ti_40;
   cout << i;
-  cout << endl;
-  ti_41 = MDC( 55, 1000 );
-  cout << ti_41;
   cout << endl;
 }
 
