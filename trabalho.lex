@@ -40,6 +40,7 @@ COMENTARIO ">.<"(.)*">.<"
 "[:"		{ yylval = Atributos( yytext); return TK_BEGIN; }
 ":]"		{ yylval = Atributos( yytext); return TK_END; }
 "inicinho"	{ yylval = Atributos( yytext); return TK_MBEGIN; }
+"ref-"		{ yylval = Atributos( yytext); return TK_REFERENCE; }
 "finzinho"	{ yylval = Atributos( yytext); return TK_MEND; }
 "retorninho"	{ yylval = Atributos( yytext); return TK_RETURN; }
 

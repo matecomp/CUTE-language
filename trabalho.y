@@ -123,7 +123,7 @@ string includes =
 // Inicio e fim de bloco
 %token TK_BEGIN TK_END TK_MBEGIN TK_MEND
 // Atribuicoes
-%token TK_ATRIB
+%token TK_ATRIB TK_REFERENCE
 // Condicoes
 %token TK_IF TK_ELSE
 // Comparacoes
@@ -287,6 +287,12 @@ PARAM : TIPO TK_ID
       {
         Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ) );
         $$.lista_str.push_back($2.v);
+        $$.lista_tipo.push_back( tipo );
+      }
+      | TIPO TK_REFERENCE TK_ID
+      {
+        Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ) );
+        $$.lista_str.push_back("&" + $3.v);
         $$.lista_tipo.push_back( tipo );
       }
     ;
@@ -995,10 +1001,12 @@ string declara_funcao( string nome, Tipo tipo, vector<string> nomes, vector<Tipo
 
   for( int i = 0; i < nomes.size(); i++ ) {
     aux += declara_var( nomes[i], tipos[i], false) + 
-           (i == nomes.size()-1 ? " " : ", ");  
+           (i == nomes.size()-1 ? " " : ", ");
+    if( nomes[i][0] == '&' )
+      nomes[i] = nomes[i].substr(1);
     insere_var_ts( nomes[i], tipos[i] );  
   }
-      
+
   return em_C[ tipo.tipo_base ] + " " + nome + "(" + aux + ")";
 }
 

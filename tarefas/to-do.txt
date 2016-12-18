@@ -2,8 +2,6 @@ Para obter 5 pontos:
 
 1) Estruturas de controle: while, do-while, switch.
 
-2) funções com parametros por referência.
-
 3) Importar random.
 
 
