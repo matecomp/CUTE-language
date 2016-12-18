@@ -139,10 +139,10 @@ string includes =
 // Tokens candidatos a ser nome de variavel
 %token TK_TEXTO TK_ID TK_INTEIRO TK_REAL
 // Print
-%token TK_WRITELN TK_WRITE
+%token TK_WRITELN TK_WRITE TK_READ
 
-%left TK_AND
-%nonassoc '<' '>' TK_MAIG TK_MEIG '=' TK_DIF 
+%left TK_AND TK_OR
+%nonassoc '<' '>' TK_MAIG TK_MEIG TK_EQUAL TK_ATRIB TK_DIF TK_PTPT
 %left '+' '-'
 %left '*' '/'
 
@@ -194,6 +194,9 @@ VAR : TIPO IDS
       {
         Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ), 
                           toInt( $4.v ), toInt( $6.v ) );
+
+        if( tipo.tipo_base == "s" )
+          erro("Aiiee!! esta linguagem nao suporta array de strings... dicupaa"); 
         
         $$ = Atributos();
         
@@ -207,6 +210,9 @@ VAR : TIPO IDS
         Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ), 
                           toInt( $4.v ), toInt( $6.v ),
 			  toInt( $9.v ), toInt( $11.v ) );
+
+        if( tipo.tipo_base == "s" )
+          erro("Aiiee!! esta linguagem nao suporta matriz de strings... dicupaa");
         
         $$ = Atributos();
         
@@ -304,6 +310,7 @@ CMDS : CMD ';' CMDS
      
 CMD : WRITE
     | WRITELN
+    | READ
     | ATRIB
     | BLOCO
     | VAR
@@ -353,48 +360,67 @@ WRITE : TK_WRITE '(' E ')'
                    "  cout << " + $3.v + ";\n";
           }
         ;
+
+READ : TK_READ '(' NOME_VAR ')'
+          { $$.c = $3.c + 
+                   "  cin >> " + $3.v + ";\n";
+          }
+        ;
   
 ATRIB : TK_ID TK_ATRIB E 
-        { // Falta verificar se pode atribuir (perde ponto se não fizer).
-          $1.t = consulta_var_ts( $1.v ) ;
-          
-          if( $1.t.tipo_base == "s" ) 
-            $$.c = $3.c + "  strncpy( " + $1.v + ", " + $3.v + ", 256 );\n";
-          else if( $1.t.tipo_base == $3.t.tipo_base )
-            $$.c = $3.c + "  " + $1.v + " = " + $3.v + ";\n";             
-          else
+        {        
+          //Verifica se a variavel existe  
+          $1.t = consulta_var_ts( $1.v );
+          //Verifica se o tipo do variavel e do valor a ser atribuido sao compativeis
+          if( $1.t.tipo_base != $3.t.tipo_base )
             erro( "Erro de atribuicao... tipos diferentes.\n"
 	      "Variavel do tipo: "+ traduz_nome_tipo_cute($1.t.tipo_base) + ".\n"
 	      "Valor do tipo: "+ traduz_nome_tipo_cute($3.t.tipo_base) + "." );
 
+          $$.c = $3.c;
+
+          if( $1.t.tipo_base == "s" ) 
+            $$.c += "  strncpy( " + $1.v + ", " + $3.v + ", 256 );\n";
+          else
+            $$.c += "  " + $1.v + " = " + $3.v + ";\n";             
         } 
       | TK_ID '[' E ']' TK_ATRIB E
-        { 
-          $1.t = consulta_var_ts( $1.v ) ;
-          if( $1.t.tipo_base != $6.t.tipo_base ) {
+        {
+          //Verifica se a variavel existe
+          $1.t = consulta_var_ts( $1.v );
+          //Verifica se o tipo do variavel e do valor a ser atribuido sao compativeis
+          if( $1.t.tipo_base != $6.t.tipo_base )
             erro( "Erro de atribuicao... tipos diferentes.\n"
 	      "Variavel do tipo: "+ traduz_nome_tipo_cute($1.t.tipo_base) + ".\n"
 	      "Valor do tipo: "+ traduz_nome_tipo_cute($6.t.tipo_base) + "." );
-          }
-          $$.c = $3.c + $6.c +
-                 gera_teste_limite_array( $1.t, $3.v ) +   
-                 "  " + $1.v + "[" + $3.v + "] = " + $6.v + ";\n";
+
+          $$.c = $3.c + $6.c + gera_teste_limite_array( $1.t, $3.v );
+
+          if( $1.t.tipo_base == "s" )
+            erro("Poxaannn tem um buguisinhuu! essa variavel nem era pra ter sido criada");
+          else
+            $$.c += "  " + $1.v + "[" + $3.v + "] = " + $6.v + ";\n";
         }
       | TK_ID '[' E ']' '[' E ']' TK_ATRIB E
-        { 
-          $1.t = consulta_var_ts( $1.v ) ;
+        {
+          //Verifica se a variavel existe
+          $1.t = consulta_var_ts( $1.v );
+          //Verifica se o tipo do variavel e do valor a ser atribuido sao compativeis
           if( $1.t.tipo_base != $9.t.tipo_base ) {
             erro( "Erro de atribuicao... tipos diferentes.\n"
 	      "Variavel do tipo: "+ traduz_nome_tipo_cute($1.t.tipo_base) + ".\n"
 	      "Valor do tipo: "+ traduz_nome_tipo_cute($9.t.tipo_base) + "." );
           }
           string aux = gera_nome_var_temp( $3.t.tipo_base );
-		  string tam = toString($1.t.fim[1] - $1.t.inicio[1] + 1);
+          string tam = toString($1.t.fim[1] - $1.t.inicio[1] + 1);
           $$.c = $3.c + $6.c + $9.c +
                  gera_teste_limite_array( $1.t, $3.v, $6.v ) +   
 		 "  " + aux  + " = " + tam  + "*" + $3.v + ";\n" +
-		 "  " + aux  + " = " + aux  + "+" + $6.v + ";\n" +
-                 "  " + $1.v + "[" + aux + "] = " + $9.v + ";\n";
+		 "  " + aux  + " = " + aux  + "+" + $6.v + ";\n";
+          if( $1.t.tipo_base == "s" )
+            erro("Poxaannn tem um buguisinhuu! essa variavel nem era pra ter sido criada");
+          else
+            $$.c += "  " + $1.v + "[" + aux + "] = " + $9.v + ";\n";
         }  
       ;   
 
@@ -426,6 +452,16 @@ E : E '+' E
     { $$ = gera_codigo_operador( $1, "||", $3 ); }
   | '(' E ')'
     { $$ = $2; }
+  | '!' E
+    { 
+      if( $2.t.tipo_base != "b" )
+        erro( "Queridinha, voce nao pode negar uma expressaozinha do tipinho " + traduz_nome_tipo_cute( $2.t.tipo_base ) );
+      $$.t = Tipo( $2.t );
+      $$.v = gera_nome_var_temp( "b" );
+      $$.c = $2.c + 
+             $$.v + " = " + "!" + $2.v + ";\n";
+      
+    }
   | F
     { $$ = $1; }
   ;
@@ -436,7 +472,15 @@ F : NOME_VAR
   | TK_REAL
     { $$.v = $1.v; $$.t = Tipo( "d" ); $$.c = $1.c; }
   | TK_TEXTO
-    { $$.v = $1.v; $$.t = Tipo( "s" ); $$.c = $1.c; }
+    { $$.v = $1.v;
+      $$.t = Tipo( "s" );
+      if( $1.v.size() - 2 == 1 ) {
+        $$.t = Tipo( "c" );
+        $$.v[0] = '\'';
+        $$.v[2] = '\'';
+      }
+      $$.c = $1.c; 
+    }
   ;
 
 EXPRS : EXPRS ',' E
@@ -565,6 +609,10 @@ void inicializa_operadores() {
   tipo_opr["i+d"] = "d";
   tipo_opr["d+i"] = "d";
   tipo_opr["d+d"] = "d";
+
+  tipo_opr["c+i"] = "c";
+  tipo_opr["i+c"] = "c";
+
   tipo_opr["s+s"] = "s";
   tipo_opr["c+s"] = "s";
   tipo_opr["s+c"] = "s";
@@ -592,62 +640,113 @@ void inicializa_operadores() {
   tipo_opr["i%i"] = "i";
   
   // Resultados para o operador "<"
+  // numero x numero
   tipo_opr["i<i"] = "b";
   tipo_opr["i<d"] = "b";
   tipo_opr["d<i"] = "b";
   tipo_opr["d<d"] = "b";
-  tipo_opr["c<c"] = "b";
-  tipo_opr["i<c"] = "b";
+
+  // numero x letra
   tipo_opr["c<i"] = "b";
-  // Resultados para o operador "<="
-  tipo_opr["i<=i"] = "b";
-  tipo_opr["i<=d"] = "b";
-  tipo_opr["d<=i"] = "b";
-  tipo_opr["d<=d"] = "b";
-  tipo_opr["c<=c"] = "b";
-  tipo_opr["i<=c"] = "b";
-  tipo_opr["c<=i"] = "b";
-//  tipo_opr["c<s"] = "b";
-//  tipo_opr["s<c"] = "b";
-//  tipo_opr["s<s"] = "b";
+  tipo_opr["i<c"] = "b";
+
+  // letra x letra
+  tipo_opr["c<c"] = "b";
+  tipo_opr["c<s"] = "b";
+  tipo_opr["s<c"] = "b";
+  tipo_opr["s<s"] = "b";
 
   // Resultados para o operador ">"
+  // numero x numero
   tipo_opr["i>i"] = "b";
   tipo_opr["i>d"] = "b";
   tipo_opr["d>i"] = "b";
   tipo_opr["d>d"] = "b";
-  tipo_opr["c>c"] = "b";
-  tipo_opr["i>c"] = "b";
+
+  // numero x letra
   tipo_opr["c>i"] = "b";
+  tipo_opr["i>c"] = "b";
+
+  // letra x letra
+  tipo_opr["c>c"] = "b";
+  tipo_opr["c>s"] = "b";
+  tipo_opr["s>c"] = "b";
+  tipo_opr["s>s"] = "b";
+
+  // Resultados para o operador "<="
+  // numero x numero
+  tipo_opr["i<=i"] = "b";
+  tipo_opr["i<=d"] = "b";
+  tipo_opr["d<=i"] = "b";
+  tipo_opr["d<=d"] = "b";
+
+  // numero x letra
+  tipo_opr["c<=i"] = "b";
+  tipo_opr["i<=c"] = "b";
+
+  // letra x letra
+  tipo_opr["c<=c"] = "b";
+  tipo_opr["c<=s"] = "b";
+  tipo_opr["s<=c"] = "b";
+  tipo_opr["s<=s"] = "b";
+
+
   // Resultados para o operador ">="
+  // numero x numero
   tipo_opr["i>=i"] = "b";
   tipo_opr["i>=d"] = "b";
   tipo_opr["d>=i"] = "b";
   tipo_opr["d>=d"] = "b";
-  tipo_opr["c>=c"] = "b";
-  tipo_opr["i>=c"] = "b";
+
+  // numero x letra
   tipo_opr["c>=i"] = "b";
+  tipo_opr["i>=c"] = "b";
+
+  // letra x letra
+  tipo_opr["c>=c"] = "b";
+  tipo_opr["c>=s"] = "b";
+  tipo_opr["s>=c"] = "b";
+  tipo_opr["s>=s"] = "b";
 
   // Resultados para o operador "And"
   tipo_opr["b&&b"] = "b";
+
+  // Resultados para o operador "Or"
+  tipo_opr["b||b"] = "b";
   
   // Resultados para o operador "Equal"
+  // numero x numero
   tipo_opr["i==i"] = "b";
   tipo_opr["i==d"] = "b";
   tipo_opr["d==i"] = "b";
   tipo_opr["d==d"] = "b";
-  tipo_opr["s==s"] = "b";
+  // numero x letra
+  tipo_opr["c==i"] = "b";
+  tipo_opr["i==c"] = "b";
+  // letra x letra
   tipo_opr["c==c"] = "b";
+  tipo_opr["c==s"] = "b";
+  tipo_opr["s==c"] = "b";
+  tipo_opr["s==s"] = "b";
+  // boolean x boolean
   tipo_opr["b==b"] = "b";
 
 
   // Resultados para o operador "Dif"
+  // numero x numero
   tipo_opr["i!=i"] = "b";
   tipo_opr["i!=d"] = "b";
   tipo_opr["d!=i"] = "b";
   tipo_opr["d!=d"] = "b";
-  tipo_opr["s!=s"] = "b";
+  // numero x letra
+  tipo_opr["c!=i"] = "b";
+  tipo_opr["i!=c"] = "b";
+  // letra x letra
   tipo_opr["c!=c"] = "b";
+  tipo_opr["c!=s"] = "b";
+  tipo_opr["s!=c"] = "b";
+  tipo_opr["s!=s"] = "b";
+  // boolean x boolean
   tipo_opr["b!=b"] = "b";
 }
 
@@ -755,25 +854,33 @@ Atributos gera_codigo_operador( Atributos s1, string opr, Atributos s3 ) {
   
   ss.t = tipo_resultado( s1.t, opr, s3.t );
   ss.v = gera_nome_var_temp( ss.t.tipo_base );
+  string aux = gera_nome_var_temp( "s" );
   
-  if( s1.t.tipo_base == "s" && s3.t.tipo_base == "s" ) 
+  ss.c = s1.c + s3.c;
+
+  if( s1.t.tipo_base == "s" && s3.t.tipo_base == "s" ) {  
     // falta testar se é o operador "+"
-    ss.c = s1.c + s3.c + // Codigo das expressões dos filhos da arvore.
-           "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
-           "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
-  else if( s1.t.tipo_base == "s" && s3.t.tipo_base == "c" )
-    // falta testar se é o operador "+"
-    ss.c = s1.c + s3.c + // Codigo das expressões dos filhos da arvore.
-           "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
-           "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
-  else if( s1.t.tipo_base == "c" && s3.t.tipo_base == "s" )
-    // falta testar se é o operador "+"
-    ss.c = s1.c + s3.c + // Codigo das expressões dos filhos da arvore.
-           "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
-           "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
-  else
-    ss.c = s1.c + s3.c + // Codigo das expressões dos filhos da arvore.
-           "  " + ss.v + " = " + s1.v + " " + opr + " " + s3.v + ";\n"; 
+    if( opr == "+" )
+      ss.c += "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
+              "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
+    if( opr == "==" || opr == ">" || opr == "<" || opr == ">=" || opr == "<=" || opr == "!=" )
+      ss.c += "  " + ss.v + " = strcmp( " + s1.v + ", " + s3.v + " ) " + opr + " 0;\n";
+
+  }
+  else if( s1.t.tipo_base == "s" && s3.t.tipo_base == "c" ) {
+    if( opr == "+" )
+      ss.c += aux + "[ 0 ] = " + s3.v + ";\n" +
+              aux + "[ 1 ] = " + "'" + "\\" + "0" + "'" + ";\n" +
+              "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
+              "  strncat( " + ss.v + ", " + aux + ", 256 );\n";
+  }else if( s1.t.tipo_base == "c" && s3.t.tipo_base == "s" ) {
+    if( opr == "+" )
+      ss.c += aux + "[ 0 ] = " + s1.v + ";\n" +
+              aux + "[ 1 ] = " + "'" + "\\" + "0" + "'" + ";\n" +
+              "  strncpy( " + ss.v + ", " + aux + ", 256 );\n" +
+              "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
+  }else
+    ss.c += "  " + ss.v + " = " + s1.v + " " + opr + " " + s3.v + ";\n"; 
   
   debug( "E: E " + opr + " E", ss );
   return ss;

@@ -1,7 +1,7 @@
+>.< Cute language example code >.<
 oiee PROGRAMINHA;
 
-intinho X1[0..20][0..5];
-intinho X2[0..20];
+intinho X1[1..5][1..5];
 
 funcaozinha intinho MDC(intinho a, intinho b)[:
 	retorninho a*b;
@@ -9,31 +9,15 @@ funcaozinha intinho MDC(intinho a, intinho b)[:
 
 inicinho[:
 	
-	intinho i;
-	intinho j;
+	intinho i, j;
+	i = 1;
+	printinln(i);
+	printinln(j);
 
-	forzinho i = 0..20[:
-		forzinho j = 0..5[:
-			ifinho ((i + j) % 2) == 0 [:
-				X1[i][j] = 0;
-			:]elsinho[:
-				X1[i][j] = 1;
-			:]
-		:]
-		X2[i] = i;
+	ifinho i == 2 or i > 2 [:
+		printinln('Ok');
+	:] elsinho [:
+		printinln('Not');
 	:]
-
-	forzinho i = 0..20[:
-		forzinho j = 0..5[:
-			printin(X1[i][j]);
-			printin(' ');
-		:]
-		printinln(' ');
-	:]
-
-	txtzinho Mat;
-	charzinho c;
-	Mat = 'msjkhdsk';
-	printinln(Mat);
 
 :]finzinho

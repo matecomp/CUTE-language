@@ -2,27 +2,20 @@ Para obter 5 pontos:
 
 1) Estruturas de controle: while, do-while, switch.
 
-2) Variáveis com escopo (???). *Eu acho que ja foi!
+2) funções com parametros por referência.
 
-3) funções com parametros por referência.
-
-4) saida padrao (scanf ou cout)
-
-11) Operadores básicos: ( ) + - / * % && || ! > < >= <= == != 
-
-
-
+3) Importar random.
 
 
 Para nota maior que 5
-
-12) Operadores relacionais para string: "a" < "b", "Ola" != "Olá" etc
 
 14) Operador de comparacao de arrays: igual e diferente
 
 15) Operador "pertence": if( x in tab ), onde tab é um array.
 
 16) Rodar os programas exemplo: mdc recursivo, multiplicacao de matrizes e concatenação de strings (serão enviados em breve).
+
+17) Melhorar I/O.
 
 
 HOMOSSEXUALISMO É QUE NEM HUMANAS... NÃO CURTO, MAS NADA CONTRA QUEM CURTE...

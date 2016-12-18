@@ -13,7 +13,7 @@ REAL  	"-"?{NUMERO}+("."{NUMERO}+)?
 ID      {LETRA}({LETRA}|{NUMERO})*
 TEXTO 	"'"([^\n']|'""')*"'"
 
-COMENTARIO "(*"([^*]|"*"[^)])*"*)"
+COMENTARIO ">.<"(.)*">.<"
 
 %%
 
@@ -34,6 +34,7 @@ COMENTARIO "(*"([^*]|"*"[^)])*"*)"
 "whilinho"  	{ yylval = Atributos( yytext); return TK_WHILE; }
 "dowhilinho"  	{ yylval = Atributos( yytext); return TK_DOWHILE; }
 "switinho"  	{ yylval = Atributos( yytext); return TK_SWITCH; }
+"scanzinho"	{ yylval = Atributos( yytext); return TK_READ; }
 "printin" 	{ yylval = Atributos( yytext); return TK_WRITE; }	
 "printinln" 	{ yylval = Atributos( yytext); return TK_WRITELN; }	
 "[:"		{ yylval = Atributos( yytext); return TK_BEGIN; }
@@ -47,17 +48,17 @@ COMENTARIO "(*"([^*]|"*"[^)])*"*)"
 "="       { yylval = Atributos( yytext ); return TK_ATRIB; }
 "<="       { yylval = Atributos( yytext ); return TK_MEIG; }
 ">="       { yylval = Atributos( yytext ); return TK_MAIG; }
-"<>"       { yylval = Atributos( yytext ); return TK_DIF; }
+"!="       { yylval = Atributos( yytext ); return TK_DIF; }
 "=="       { yylval = Atributos( yytext ); return TK_EQUAL; }
 "and"      { yylval = Atributos( yytext ); return TK_AND; }
 "or"      { yylval = Atributos( yytext ); return TK_OR; }
 
 
-{TEXTO}	  { yylval = Atributos( troca_aspas( yytext ), Tipo( "string" ) ); return TK_TEXTO; }
-{ID}	  { yylval = Atributos( yytext ); return TK_ID; }
-{INTEIRO} { yylval = Atributos( yytext, Tipo( "int" ) ); return TK_INTEIRO; }
-{REAL}    { yylval = Atributos( yytext, Tipo( "double" ) ); return TK_REAL; }
-.	  { yylval = Atributos( yytext ); return *yytext; }
+{TEXTO}	   { yylval = Atributos( troca_aspas( yytext ), Tipo( "string" ) ); return TK_TEXTO; }
+{ID}	   { yylval = Atributos( yytext ); return TK_ID; }
+{INTEIRO}  { yylval = Atributos( yytext, Tipo( "int" ) ); return TK_INTEIRO; }
+{REAL}     { yylval = Atributos( yytext, Tipo( "double" ) ); return TK_REAL; }
+.	   { yylval = Atributos( yytext ); return *yytext; }
 
 %%
 
