@@ -144,7 +144,7 @@ string includes =
 %left TK_AND TK_OR
 %nonassoc '<' '>' TK_MAIG TK_MEIG TK_EQUAL TK_ATRIB TK_DIF TK_PTPT
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 
 %%
 
@@ -304,7 +304,12 @@ BLOCO : TK_BEGIN { var_temp.push_back( "" );} CMDS TK_END
       ;
 
 RETURN : TK_RETURN E ';'
-         { $$.c = $2.c + "  Result = " + $2.v + ";\n"; }
+         { $$.c = $2.c;
+           if( $2.t.tipo_base == "s" )
+             $$.c += "  strcpy( Result, " + $2.v + " );\n";
+           else
+             $$.c += "  Result = " + $2.v + ";\n";
+         }
        ;
       
 CMDS : CMD ';' CMDS

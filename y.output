@@ -9,19 +9,6 @@ State 3 conflicts: 6 shift/reduce, 1 reduce/reduce
 State 13 conflicts: 6 shift/reduce, 1 reduce/reduce
 State 23 conflicts: 5 shift/reduce
 State 94 conflicts: 13 shift/reduce
-State 126 conflicts: 1 shift/reduce
-State 127 conflicts: 1 shift/reduce
-State 128 conflicts: 1 shift/reduce
-State 129 conflicts: 1 shift/reduce
-State 130 conflicts: 1 shift/reduce
-State 131 conflicts: 1 shift/reduce
-State 132 conflicts: 1 shift/reduce
-State 133 conflicts: 1 shift/reduce
-State 134 conflicts: 1 shift/reduce
-State 135 conflicts: 1 shift/reduce
-State 136 conflicts: 1 shift/reduce
-State 137 conflicts: 1 shift/reduce
-State 138 conflicts: 13 shift/reduce
 
 
 Grammar
@@ -1315,8 +1302,8 @@ State 93
     '-'       shift, and go to state 105
     '*'       shift, and go to state 106
     '/'       shift, and go to state 107
-    ')'       shift, and go to state 124
     '%'       shift, and go to state 108
+    ')'       shift, and go to state 124
 
 
 State 94
@@ -1688,8 +1675,8 @@ State 111
     '-'       shift, and go to state 105
     '*'       shift, and go to state 106
     '/'       shift, and go to state 107
-    ']'       shift, and go to state 140
     '%'       shift, and go to state 108
+    ']'       shift, and go to state 140
 
 
 State 112
@@ -1721,8 +1708,8 @@ State 112
     '-'       shift, and go to state 105
     '*'       shift, and go to state 106
     '/'       shift, and go to state 107
-    ')'       shift, and go to state 141
     '%'       shift, and go to state 108
+    ')'       shift, and go to state 141
 
 
 State 113
@@ -1754,8 +1741,8 @@ State 113
     '-'       shift, and go to state 105
     '*'       shift, and go to state 106
     '/'       shift, and go to state 107
-    ')'       shift, and go to state 142
     '%'       shift, and go to state 108
+    ')'       shift, and go to state 142
 
 
 State 114
@@ -1825,8 +1812,8 @@ State 119
     '-'       shift, and go to state 105
     '*'       shift, and go to state 106
     '/'       shift, and go to state 107
-    ';'       shift, and go to state 145
     '%'       shift, and go to state 108
+    ';'       shift, and go to state 145
 
 
 State 120
@@ -1866,8 +1853,8 @@ State 121
     '-'       shift, and go to state 105
     '*'       shift, and go to state 106
     '/'       shift, and go to state 107
-    ']'       shift, and go to state 146
     '%'       shift, and go to state 108
+    ']'       shift, and go to state 146
 
 
 State 122
@@ -1958,7 +1945,6 @@ State 126
     '<'       error (nonassociative)
     '>'       error (nonassociative)
 
-    '%'       [reduce using rule 63 (E)]
     $default  reduce using rule 63 (E)
 
 
@@ -1992,7 +1978,6 @@ State 127
     '<'       error (nonassociative)
     '>'       error (nonassociative)
 
-    '%'       [reduce using rule 62 (E)]
     $default  reduce using rule 62 (E)
 
 
@@ -2026,7 +2011,6 @@ State 128
     '<'       error (nonassociative)
     '>'       error (nonassociative)
 
-    '%'       [reduce using rule 65 (E)]
     $default  reduce using rule 65 (E)
 
 
@@ -2060,7 +2044,6 @@ State 129
     '<'       error (nonassociative)
     '>'       error (nonassociative)
 
-    '%'       [reduce using rule 64 (E)]
     $default  reduce using rule 64 (E)
 
 
@@ -2093,7 +2076,6 @@ State 130
     '/'       shift, and go to state 107
     '%'       shift, and go to state 108
 
-    '%'       [reduce using rule 66 (E)]
     $default  reduce using rule 66 (E)
 
 
@@ -2126,7 +2108,6 @@ State 131
     '/'       shift, and go to state 107
     '%'       shift, and go to state 108
 
-    '%'       [reduce using rule 67 (E)]
     $default  reduce using rule 67 (E)
 
 
@@ -2160,7 +2141,6 @@ State 132
     '<'       error (nonassociative)
     '>'       error (nonassociative)
 
-    '%'       [reduce using rule 60 (E)]
     $default  reduce using rule 60 (E)
 
 
@@ -2194,7 +2174,6 @@ State 133
     '<'       error (nonassociative)
     '>'       error (nonassociative)
 
-    '%'       [reduce using rule 61 (E)]
     $default  reduce using rule 61 (E)
 
 
@@ -2219,7 +2198,6 @@ State 134
     '/'  shift, and go to state 107
     '%'  shift, and go to state 108
 
-    '%'       [reduce using rule 55 (E)]
     $default  reduce using rule 55 (E)
 
 
@@ -2244,7 +2222,6 @@ State 135
     '/'  shift, and go to state 107
     '%'  shift, and go to state 108
 
-    '%'       [reduce using rule 56 (E)]
     $default  reduce using rule 56 (E)
 
 
@@ -2265,9 +2242,6 @@ State 136
    66  | E . TK_AND E
    67  | E . TK_OR E
 
-    '%'  shift, and go to state 108
-
-    '%'       [reduce using rule 57 (E)]
     $default  reduce using rule 57 (E)
 
 
@@ -2288,9 +2262,6 @@ State 137
    66  | E . TK_AND E
    67  | E . TK_OR E
 
-    '%'  shift, and go to state 108
-
-    '%'       [reduce using rule 58 (E)]
     $default  reduce using rule 58 (E)
 
 
@@ -2311,33 +2282,6 @@ State 138
    66  | E . TK_AND E
    67  | E . TK_OR E
 
-    TK_MAIG   shift, and go to state 96
-    TK_MEIG   shift, and go to state 97
-    TK_DIF    shift, and go to state 98
-    TK_EQUAL  shift, and go to state 99
-    TK_AND    shift, and go to state 100
-    TK_OR     shift, and go to state 101
-    '<'       shift, and go to state 102
-    '>'       shift, and go to state 103
-    '+'       shift, and go to state 104
-    '-'       shift, and go to state 105
-    '*'       shift, and go to state 106
-    '/'       shift, and go to state 107
-    '%'       shift, and go to state 108
-
-    TK_MAIG   [reduce using rule 59 (E)]
-    TK_MEIG   [reduce using rule 59 (E)]
-    TK_DIF    [reduce using rule 59 (E)]
-    TK_EQUAL  [reduce using rule 59 (E)]
-    TK_AND    [reduce using rule 59 (E)]
-    TK_OR     [reduce using rule 59 (E)]
-    '<'       [reduce using rule 59 (E)]
-    '>'       [reduce using rule 59 (E)]
-    '+'       [reduce using rule 59 (E)]
-    '-'       [reduce using rule 59 (E)]
-    '*'       [reduce using rule 59 (E)]
-    '/'       [reduce using rule 59 (E)]
-    '%'       [reduce using rule 59 (E)]
     $default  reduce using rule 59 (E)
 
 
@@ -2669,8 +2613,8 @@ State 159
     '-'       shift, and go to state 105
     '*'       shift, and go to state 106
     '/'       shift, and go to state 107
-    ']'       shift, and go to state 164
     '%'       shift, and go to state 108
+    ']'       shift, and go to state 164
 
 
 State 160
@@ -2709,8 +2653,8 @@ State 161
     '-'       shift, and go to state 105
     '*'       shift, and go to state 106
     '/'       shift, and go to state 107
-    ']'       shift, and go to state 166
     '%'       shift, and go to state 108
+    ']'       shift, and go to state 166
 
 
 State 162

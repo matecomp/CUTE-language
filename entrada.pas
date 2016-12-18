@@ -1,31 +1,40 @@
 >.< Cute language example code >.<
 oiee PROGRAMINHA;
 
-intinho X1[1..5][1..5];
 
-funcaozinha intinho MDC(intinho ref-a, intinho ref-b)[:
-    a = 5;
-    b = 10;
-	retorninho a*b;
+>.< Funcaozinha que formata seu nominho e sobrenominhuuu  >.<
+funcaozinha intinho formata( txtzinho saida, txtzinho a, txtzinho b )[:
+	ifinho a > b [:
+		saida = 'Sr(a). ' + a + ' ' + b;
+	:]elsinho[:
+		saida = 'Mr(s). ' + b + ', ' + a;
+	:]
+	retorninho 0;
 :]
 
 inicinho[:
 	
-	intinho i, j, result;
-	i = 3;
-	j = 3;
+	txtzinho nome1;
+	txtzinho nome2;
+	txtzinho saida;
 
-	result = MDC(i, j);
+	intinho i;
 
-	printinln(i);
-	printinln(j);
+	printin('Digite o seu nome: ');
+	scanzin(nome1);
 
+	printin('Digite o seu sobrenome: ');
+	scanzin(nome2);
 
-
-	ifinho i == 2 or i > 2 [:
-		printinln('Ok');
-	:] elsinho [:
-		printinln('Not');
-	:]
+	printinln('');
+	printin('Bom dia: ');
+	i = formata(saida, nome1, nome2 );
+	printinln(saida);
+	printin('Bom dia: ');
+	i = formata(saida, ' ' + nome1, nome2 );
+	printinln(saida);
+	printin('Bom dia: ');
+	i = formata(saida, nome1, nome2 + ' ' );
+	printinln(saida);
 
 :]finzinho

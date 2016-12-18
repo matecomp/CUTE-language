@@ -34,7 +34,7 @@ COMENTARIO ">.<"(.)*">.<"
 "whilinho"  	{ yylval = Atributos( yytext); return TK_WHILE; }
 "dowhilinho"  	{ yylval = Atributos( yytext); return TK_DOWHILE; }
 "switinho"  	{ yylval = Atributos( yytext); return TK_SWITCH; }
-"scanzinho"	{ yylval = Atributos( yytext); return TK_READ; }
+"scanzin"	{ yylval = Atributos( yytext); return TK_READ; }
 "printin" 	{ yylval = Atributos( yytext); return TK_WRITE; }	
 "printinln" 	{ yylval = Atributos( yytext); return TK_WRITELN; }	
 "[:"		{ yylval = Atributos( yytext); return TK_BEGIN; }
