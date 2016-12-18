@@ -1,0 +1,31 @@
+Para obter 5 pontos:
+
+1) Estruturas de controle: while, do-while, switch.
+
+2) Variáveis com escopo (???). *Eu acho que ja foi!
+
+3) funções com parametros por referência.
+
+4) saida padrao (scanf ou cout)
+
+9) verificação de tipos
+
+10) verificação do número e tipo dos parâmetros de funções
+
+11) Operadores básicos: ( ) + - / * % && || ! > < >= <= == != 
+
+
+
+
+
+Para nota maior que 5
+
+12) Operadores relacionais para string: "a" < "b", "Ola" != "Olá" etc
+
+13) Verificar limite de arrays e matrizes.
+
+14) Operador de comparacao de arrays: igual e diferente
+
+15) Operador "pertence": if( x in tab ), onde tab é um array.
+
+16) Rodar os programas exemplo: mdc recursivo, multiplicacao de matrizes e concatenação de strings (serão enviados em breve).

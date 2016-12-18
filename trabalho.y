@@ -406,6 +406,8 @@ E : E '+' E
     { $$ = gera_codigo_operador( $1, "*", $3 ); }
   | E '/' E
     { $$ = gera_codigo_operador( $1, "/", $3 ); }
+  | E '%' E
+    { $$ = gera_codigo_operador( $1, "%", $3 ); }
   | E '<' E
     { $$ = gera_codigo_operador( $1, "<", $3 ); }
   | E '>' E
@@ -585,6 +587,9 @@ void inicializa_operadores() {
   tipo_opr["i/d"] = "d";
   tipo_opr["d/i"] = "d";
   tipo_opr["d/d"] = "d";
+
+  // Resultados para o operador "%"
+  tipo_opr["i%i"] = "i";
   
   // Resultados para o operador "<"
   tipo_opr["i<i"] = "b";
@@ -756,10 +761,16 @@ Atributos gera_codigo_operador( Atributos s1, string opr, Atributos s3 ) {
     ss.c = s1.c + s3.c + // Codigo das expressões dos filhos da arvore.
            "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
            "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
-  else if( s1.t.tipo_base == "s" && s3.t.tipo_base == "c" ) 
-    ;
-  else if( s1.t.tipo_base == "c" && s3.t.tipo_base == "s" ) 
-    ;
+  else if( s1.t.tipo_base == "s" && s3.t.tipo_base == "c" )
+    // falta testar se é o operador "+"
+    ss.c = s1.c + s3.c + // Codigo das expressões dos filhos da arvore.
+           "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
+           "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
+  else if( s1.t.tipo_base == "c" && s3.t.tipo_base == "s" )
+    // falta testar se é o operador "+"
+    ss.c = s1.c + s3.c + // Codigo das expressões dos filhos da arvore.
+           "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
+           "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
   else
     ss.c = s1.c + s3.c + // Codigo das expressões dos filhos da arvore.
            "  " + ss.v + " = " + s1.v + " " + opr + " " + s3.v + ";\n"; 
@@ -861,8 +872,7 @@ string declara_var( string nome, Tipo tipo, bool ln ) {
   return em_C[ tipo.tipo_base ] + nome + indice;
 }
 
-string declara_funcao( string nome, Tipo tipo, 
-                       vector<string> nomes, vector<Tipo> tipos ) {
+string declara_funcao( string nome, Tipo tipo, vector<string> nomes, vector<Tipo> tipos ) {
   static map<string, string> em_C = inicializaMapEmC();
 
   insere_funcao_ts( nome, tipo, tipos );
@@ -875,7 +885,7 @@ string declara_funcao( string nome, Tipo tipo,
     erro( "Bug no compilador! Nomes e tipos de parametros diferentes." );
       
   string aux = " ";
-  
+
   for( int i = 0; i < nomes.size(); i++ ) {
     aux += declara_var( nomes[i], tipos[i], false) + 
            (i == nomes.size()-1 ? " " : ", ");  

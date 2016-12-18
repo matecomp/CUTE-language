@@ -11,25 +11,29 @@ inicinho[:
 	
 	intinho i;
 	intinho j;
-	
+
 	forzinho i = 0..20[:
 		forzinho j = 0..5[:
-			X1[i][j] = i*6 + j;
+			ifinho ((i + j) % 2) == 0 [:
+				X1[i][j] = 0;
+			:]elsinho[:
+				X1[i][j] = 1;
+			:]
 		:]
 		X2[i] = i;
 	:]
-
-	X1[20][5] = 15;
 
 	forzinho i = 0..20[:
 		forzinho j = 0..5[:
 			printin(X1[i][j]);
 			printin(' ');
 		:]
-		printinln('');
+		printinln(' ');
 	:]
 
-	i = MDC(80, 80);
-	printinln(i);
+	txtzinho Mat;
+	charzinho c;
+	Mat = 'msjkhdsk';
+	printinln(Mat);
 
 :]finzinho

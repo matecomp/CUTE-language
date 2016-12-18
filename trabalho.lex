@@ -11,7 +11,7 @@ LETRA   [A-Za-z_]
 INTEIRO "-"?{NUMERO}+
 REAL  	"-"?{NUMERO}+("."{NUMERO}+)?
 ID      {LETRA}({LETRA}|{NUMERO})*
-TEXTO 	"'"([^\n']|"''")*"'"
+TEXTO 	"'"([^\n']|'""')*"'"
 
 COMENTARIO "(*"([^*]|"*"[^)])*"*)"
 
