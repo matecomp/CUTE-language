@@ -41,6 +41,8 @@ struct Tipo {
   }
   
   Tipo( string base, int inicio, int fim  ) {
+    if( inicio > fim )
+      erro( "nome_variavel[n1..n2], onde n1 <= n2." );
     tipo_base = base;
     ndim = VETOR;
     this->inicio[0] = inicio;
@@ -48,6 +50,8 @@ struct Tipo {
   }
   
   Tipo( string base, int inicio_1, int fim_1, int inicio_2, int fim_2  ) {
+    if( inicio_1 > fim_1 || inicio_2 > fim_2 )
+      erro( "nome_variavel[r1..r2][c1..c2], onde r1 <= r2 && c1 <= c2." );
     tipo_base = base;
     ndim = MATRIZ;
     this->inicio[0] = inicio_1;
@@ -142,7 +146,7 @@ string includes =
 %token TK_WRITELN TK_WRITE TK_READ
 
 %left TK_AND TK_OR
-%nonassoc '<' '>' TK_MAIG TK_MEIG TK_EQUAL TK_ATRIB TK_DIF TK_PTPT
+%nonassoc '<' '>' TK_MAIG TK_MEIG TK_EQUAL TK_DIF TK_PTPT TK_ATRIB
 %left '+' '-'
 %left '*' '/' '%'
 
@@ -190,7 +194,7 @@ VAR : TIPO IDS
           insere_var_ts( $2.lista_str[i], tipo );
         }
       }
-    | TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' 
+    | TIPO TK_ID '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' 
       {
         Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ), 
                           toInt( $4.v ), toInt( $6.v ) );
@@ -200,12 +204,11 @@ VAR : TIPO IDS
         
         $$ = Atributos();
         
-        for( int i = 0; i < $2.lista_str.size(); i++ ) {
-          $$.c += declara_var( $2.lista_str[i], tipo );
-          insere_var_ts( $2.lista_str[i], tipo );
-        }
+        $$ = Atributos();
+        $$.c += declara_var( $2.v, tipo );
+        insere_var_ts( $2.v, tipo );
       }
-    |  TIPO IDS '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
+    |  TIPO TK_ID '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']' '[' TK_INTEIRO TK_PTPT TK_INTEIRO ']'
       {
         Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ), 
                           toInt( $4.v ), toInt( $6.v ),
@@ -215,11 +218,8 @@ VAR : TIPO IDS
           erro("Aiiee!! esta linguagem nao suporta matriz de strings... dicupaa");
         
         $$ = Atributos();
-        
-        for( int i = 0; i < $2.lista_str.size(); i++ ) {
-          $$.c += declara_var( $2.lista_str[i], tipo );
-          insere_var_ts( $2.lista_str[i], tipo );
-        }
+        $$.c += declara_var( $2.v, tipo );
+        insere_var_ts( $2.v, tipo );
       }
     ;
 
@@ -286,6 +286,22 @@ PARAMS : PARAM ',' PARAMS
 PARAM : TIPO TK_ID 
       {
         Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ) );
+        $$.lista_str.push_back($2.v);
+        $$.lista_tipo.push_back( tipo );
+      }
+      | TIPO TK_ID '[' ']'
+      {
+        Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ),
+			  0, 100 );
+        tipo.ndim = BASICO;
+        $$.lista_str.push_back($2.v + "[]");
+        $$.lista_tipo.push_back( tipo );
+      }
+      | TIPO TK_ID '[' ']' '[' ']'
+      {
+        Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ), 
+                          0, 100,
+			  0, 100 );
         $$.lista_str.push_back($2.v);
         $$.lista_tipo.push_back( tipo );
       }
@@ -478,6 +494,7 @@ E : E '+' E
   ;
   
 F : NOME_VAR
+    { $$ = $1; }
   | TK_INTEIRO 
     { $$.v = $1.v; $$.t = Tipo( "i" ); $$.c = $1.c; }
   | TK_REAL
@@ -888,7 +905,6 @@ Atributos gera_codigo_operador( Atributos s1, string opr, Atributos s3 ) {
   ss.c = s1.c + s3.c;
 
   if( s1.t.tipo_base == "s" && s3.t.tipo_base == "s" ) {  
-    // falta testar se é o operador "+"
     if( opr == "+" )
       ss.c += "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
               "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
@@ -1027,6 +1043,10 @@ string declara_funcao( string nome, Tipo tipo, vector<string> nomes, vector<Tipo
            (i == nomes.size()-1 ? " " : ", ");
     if( nomes[i][0] == '&' )
       nomes[i] = nomes[i].substr(1);
+    int tam = nomes[i].size()-1;
+    while( nomes[i][tam] == '[' || nomes[i][tam] == ']' )
+      tam--;
+    nomes[i] = nomes[i].substr(0,tam+1);
     insere_var_ts( nomes[i], tipos[i] );  
   }
 
@@ -1079,9 +1099,12 @@ string gera_teste_limite_array( Tipo tipoArray, string indice_1, string indice_2
                                              var_teste_fim1 + ";\n" +
 
                   "  " + var_teste2 + " = " + var_teste_inicio2 + " && " + 
-                                             var_teste_fim2 + ";\n";
+                                             var_teste_fim2 + ";\n" +
 
-      codigo += "  if( " + var_teste1 + "&&" + var_teste2 + " ) goto " + label_end + ";\n" +
+                  "  " + var_teste1 + " = " + var_teste1 + " && " + 
+                                             var_teste2 + ";\n";
+
+      codigo += "  if( " + var_teste1 + " ) goto " + label_end + ";\n" +
                 "  printf( \"Limite de array ultrapassado: linha(%d <= %d <= %d)\", "+
                 toString( tipoArray.inicio[0] ) + " ," + indice_1 + ", " +
                 toString( tipoArray.fim[0] ) + " );\n" +

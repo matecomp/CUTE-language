@@ -1,8 +1,9 @@
 Para obter 5 pontos:
 
 1) Estruturas de controle: while, do-while, switch.
-
-3) Importar random.
+2) Inicializar var global
+3) passar array ou matrizes como argumento.
+4) operações basicas entre elementos de um array ou matriz.
 
 
 Para nota maior que 5
@@ -11,9 +12,13 @@ Para nota maior que 5
 
 15) Operador "pertence": if( x in tab ), onde tab é um array.
 
-16) Rodar os programas exemplo: mdc recursivo, multiplicacao de matrizes e concatenação de strings (serão enviados em breve).
-
 17) Melhorar I/O.
+
+Para enfeitar
+
+1) Declarar arrays consecutivos...
+2) Criar o tipo void
+3) operadores: += -+ *= /=
 
 
 HOMOSSEXUALISMO É QUE NEM HUMANAS... NÃO CURTO, MAS NADA CONTRA QUEM CURTE...
