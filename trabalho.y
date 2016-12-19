@@ -972,7 +972,7 @@ Atributos gera_codigo_operador( Atributos s1, string opr, Atributos s3 ) {
   if( s1.t.ndim == VETOR && s3.t.ndim == VETOR ) { 
     int tam1 = s1.t.fim[0] - s1.t.inicio[0] + 1;
     int tam3 = s3.t.fim[0] - s3.t.inicio[0] + 1;
-    if( (opr == "==") && (s1.t.tipo_base == s3.t.tipo_base) ){
+    if( ( (opr == "==") || (opr == "!=") ) && (s1.t.tipo_base == s3.t.tipo_base) ){
       string var_inicio = gera_nome_var_temp( "i" );
       string var_fim = gera_nome_var_temp( "i" );
       string v1 = gera_nome_var_temp( "i" );
@@ -998,8 +998,11 @@ Atributos gera_codigo_operador( Atributos s1, string opr, Atributos s3 ) {
 
                     "  " + var_inicio + " = " + var_inicio + " + 1;\n" +
                     "  goto " + label_teste + ";\n" +
-                    label_fim + ":;\n" + 
-                    ss.v + " = !" + rt + ";\n";
+                    label_fim + ":;\n";
+       if( opr == "==" )
+         ss.c += ss.v + " = !" + rt + ";\n";
+       else
+         ss.c += ss.v + " = " + rt + ";\n";
         
     }else{
       erro( "Comparacao entre arrays apenas entre arrays de mesmo tipo" );
