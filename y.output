@@ -3,6 +3,7 @@ Terminals unused in grammar
    TK_WHILE
    TK_DOWHILE
    TK_SWITCH
+   TK_VOID
 
 
 State 3 conflicts: 6 shift/reduce, 1 reduce/reduce
@@ -178,88 +179,89 @@ TK_CHAR (281) 15
 TK_BOOL (282) 14
 TK_DOUBLE (283) 12
 TK_STRING (284) 16
-TK_TEXTO (285) 76
-TK_ID (286) 2 10 11 17 18 25 30 31 32 33 54 55 56 77 78 79 80 83
-TK_INTEIRO (287) 10 11 74
-TK_REAL (288) 75
-TK_WRITELN (289) 51
-TK_WRITE (290) 52
-TK_READ (291) 53
+TK_VOID (285)
+TK_TEXTO (286) 76
+TK_ID (287) 2 10 11 17 18 25 30 31 32 33 54 55 56 77 78 79 80 83
+TK_INTEIRO (288) 10 11 74
+TK_REAL (289) 75
+TK_WRITELN (290) 51
+TK_WRITE (291) 52
+TK_READ (292) 53
 
 
 Nonterminals, with rules where they appear
 
-$accept (51)
+$accept (52)
     on left: 0
-S (52)
+S (53)
     on left: 1, on right: 0
-PROGRAM (53)
+PROGRAM (54)
     on left: 2, on right: 1
-DECLS (54)
+DECLS (55)
     on left: 3 4, on right: 1 3
-DECL (55)
+DECL (56)
     on left: 5 6, on right: 3
-VARS (56)
+VARS (57)
     on left: 7 8, on right: 5 7
-VAR (57)
+VAR (58)
     on left: 9 10 11, on right: 7 45
-TIPO (58)
+TIPO (59)
     on left: 12 13 14 15 16, on right: 9 10 11 25 30 31 32 33
-IDS (59)
+IDS (60)
     on left: 17 18, on right: 9 17
-MAIN (60)
+MAIN (61)
     on left: 19, on right: 1
-FUNCTION (61)
+FUNCTION (62)
     on left: 22, on right: 6
-$@1 (62)
+$@1 (63)
     on left: 20, on right: 22
-$@2 (63)
+$@2 (64)
     on left: 21, on right: 22
-CORPO (64)
+CORPO (65)
     on left: 24, on right: 22
-$@3 (65)
+$@3 (66)
     on left: 23, on right: 24
-CABECALHO (66)
+CABECALHO (67)
     on left: 25, on right: 22
-OPC_PARAM (67)
+OPC_PARAM (68)
     on left: 26 27, on right: 25
-PARAMS (68)
+PARAMS (69)
     on left: 28 29, on right: 26 28
-PARAM (69)
+PARAM (70)
     on left: 30 31 32 33, on right: 28 29
-BLOCO (70)
+BLOCO (71)
     on left: 35, on right: 19 44
-$@4 (71)
+$@4 (72)
     on left: 34, on right: 35
-RETURN (72)
+RETURN (73)
     on left: 36, on right: 24
-CMDS (73)
+CMDS (74)
     on left: 37 38 39, on right: 24 35 37 38 48 49 50
-CMD (74)
+CMD (75)
     on left: 40 41 42 43 44 45, on right: 37
-LOOP (75)
+LOOP (76)
     on left: 46 47, on right: 38
-CMD_FOR (76)
+CMD_FOR (77)
     on left: 48, on right: 47
-CMD_IF (77)
+CMD_IF (78)
     on left: 49 50, on right: 46
-WRITELN (78)
+WRITELN (79)
     on left: 51, on right: 41
-WRITE (79)
+WRITE (80)
     on left: 52, on right: 40
-READ (80)
+READ (81)
     on left: 53, on right: 42
-ATRIB (81)
+ATRIB (82)
     on left: 54 55 56, on right: 43
-E (82)
+E (83)
     on left: 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72, on right:
     36 48 49 50 51 52 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68
     69 70 71 77 78 81 82
-F (83)
+F (84)
     on left: 73 74 75 76 77 78 79 80, on right: 72
-EXPRS (84)
+EXPRS (85)
     on left: 81 82, on right: 79 81
-NOME_VAR (85)
+NOME_VAR (86)
     on left: 83, on right: 48 53 73
 
 

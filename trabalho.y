@@ -148,7 +148,7 @@ string colunas = "";
 // X .. Y => X ate Y
 %token TK_PTPT
 // Tokens para tipar a variavel
-%token TK_INT TK_CHAR TK_BOOL TK_DOUBLE TK_STRING
+%token TK_INT TK_CHAR TK_BOOL TK_DOUBLE TK_STRING TK_VOID
 // Tokens candidatos a ser nome de variavel
 %token TK_TEXTO TK_ID TK_INTEIRO TK_REAL
 // Print
@@ -253,22 +253,27 @@ MAIN :  TK_MBEGIN BLOCO TK_MEND
      ; 
 
 FUNCTION : TK_FUNCTION { empilha_ts(); } CABECALHO CORPO { desempilha_ts(); }
-           { $$.c = $3.c + " {\n" + $4.c + 
-                    "  return Result;\n}\n"; } 
+           { $$.c = $3.c + $4.c + "}\n";
+             if( $3.t.tipo_base != $4.t.tipo_base )
+               erro( "Retornando tipinho inválido na funçãozinha" ); 
+           } 
          ;
 
-CORPO : TK_BEGIN { var_temp.push_back( "" );} CMDS RETURN TK_END
+CORPO : TK_BEGIN { var_temp.push_back( "" ); } CMDS RETURN TK_END
         { 
           string vars = var_temp[var_temp.size()-1];
           var_temp.pop_back();
-          $$.c = "  " + declara_var( "Result", consulta_var_ts( "Result" ) );
-          $$.c += vars + $3.c + $4.c; }
+          $$.c += vars + $3.c + $4.c; 
+          $$.t = $4.t;
+        }
       ; 
 
 CABECALHO : TIPO TK_ID OPC_PARAM
             {
               Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ) );
-              $$.c = declara_funcao( $2.v, tipo, $3.lista_str, $3.lista_tipo ); }
+              $$.t = tipo;
+              $$.c = declara_funcao( $2.v, tipo, $3.lista_str, $3.lista_tipo );
+              $$.c += " {\n  " + declara_var( "Result", tipo );}
           ;
 
 OPC_PARAM : '(' PARAMS ')'
@@ -301,7 +306,7 @@ PARAM : TIPO TK_ID
       | TIPO TK_ID '[' ']'
       {
         Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ),
-			  -200, 200, 1 );
+			  0, 200, 1 );
         tipo.ndim = BASICO;
         $$.lista_str.push_back($2.v + "[]");
         $$.lista_tipo.push_back( tipo );
@@ -309,8 +314,8 @@ PARAM : TIPO TK_ID
       | TIPO TK_ID '[' ']' '[' ']'
       {
         Tipo tipo = Tipo( traduz_nome_tipo_variavel( $1.v ), 
-                          -200, 200,
-			  -200, 200, 1 );
+                          0, 200,
+			  0, 200, 1 );
         $$.lista_str.push_back($2.v);
         $$.lista_tipo.push_back( tipo );
       }
@@ -334,6 +339,8 @@ RETURN : TK_RETURN E ';'
              $$.c += "  strcpy( Result, " + $2.v + " );\n";
            else
              $$.c += "  Result = " + $2.v + ";\n";
+           $$.c += "return Result;\n";
+           $$.t = $2.t;
          }
        ;
       
@@ -363,7 +370,11 @@ CMD_FOR : TK_FOR NOME_VAR TK_ATRIB E TK_PTPT E TK_BEGIN CMDS TK_END
             string label_fim = gera_label( "fim_for" );
             string condicao = gera_nome_var_temp( "b" );
           
-            // Falta verificar os tipos... perde ponto se não o fizer.
+            if( $2.t.tipo_base != $4.t.tipo_base || $2.t.tipo_base != $6.t.tipo_base )
+              erro( "tipinhos diferentes dentro do for... T.T" );
+            if( $2.t.tipo_base == "s" )
+              erro( "não é possível fazer um for iterando em um txtzinho... T.T" );
+             
             $$.c =  $4.c + $6.c +
                     "  " + $2.v + " = " + $4.v + ";\n" +
                     "  " + var_fim + " = " + $6.v + ";\n" +
@@ -374,7 +385,7 @@ CMD_FOR : TK_FOR NOME_VAR TK_ATRIB E TK_PTPT E TK_BEGIN CMDS TK_END
                     $8.c +
                     "  " + $2.v + " = " + $2.v + " + 1;\n" +
                     "  goto " + label_teste + ";\n" +
-                    label_fim + ":;\n";  
+                    label_fim + ":;\n";
           }
         ;
     
@@ -467,7 +478,7 @@ ATRIB : TK_ID TK_ATRIB E
           else
             $$.c += "  " + $1.v + "[" + aux + "] = " + $9.v + ";\n";
         }
-      ;   
+      ;
 
 E : E '+' E
     { $$ = gera_codigo_operador( $1, "+", $3 ); }
@@ -488,7 +499,7 @@ E : E '+' E
   | E TK_MAIG E
     { $$ = gera_codigo_operador( $1, ">=", $3 ); }
   | E TK_EQUAL E
-    { $$ = gera_codigo_operador( $1, "==", $3 ); }
+    {  $$ = gera_codigo_operador( $1, "==", $3 ); }
   | E TK_DIF E
     { $$ = gera_codigo_operador( $1, "!=", $3 ); }
   | E TK_AND E
@@ -941,34 +952,60 @@ string gera_label( string tipo ) {
 }
 
 Tipo tipo_resultado( Tipo t1, string opr, Tipo t3 ) {
-  if( t1.ndim == BASICO && t3.ndim == BASICO ) {
-    string aux = tipo_opr[ t1.tipo_base + opr + t3.tipo_base ];
+  string aux = tipo_opr[ t1.tipo_base + opr + t3.tipo_base ];
+  if( aux == "" ) 
+    erro( "O operador " + opr + " não está definido para os tipos '" +
+      t1.tipo_base + "' e '" + t3.tipo_base + "'.");
   
-    if( aux == "" ) 
-      erro( "O operador " + opr + " não está definido para os tipos '" +
-            t1.tipo_base + "' e '" + t3.tipo_base + "'.");
-  
-    return Tipo( aux );
-  }
-  else { // Testes para os operadores de comparacao de array
-    return Tipo();
-  }  
+  return Tipo( aux );
 } 
 
 Atributos gera_codigo_operador( Atributos s1, string opr, Atributos s3 ) {
   Atributos ss;
-  
+
   ss.t = tipo_resultado( s1.t, opr, s3.t );
   ss.v = gera_nome_var_temp( ss.t.tipo_base );
   string aux = gera_nome_var_temp( "s" );
   
   ss.c = s1.c + s3.c;
 
-  if( s1.t.ndim == VETOR ) {
-    erro( s1.c );
-  }
+  if( s1.t.ndim == VETOR && s3.t.ndim == VETOR ) { 
+    int tam1 = s1.t.fim[0] - s1.t.inicio[0] + 1;
+    int tam3 = s3.t.fim[0] - s3.t.inicio[0] + 1;
+    if( (opr == "==") && (s1.t.tipo_base == s3.t.tipo_base) ){
+      string var_inicio = gera_nome_var_temp( "i" );
+      string var_fim = gera_nome_var_temp( "i" );
+      string v1 = gera_nome_var_temp( "i" );
+      string v3 = gera_nome_var_temp( "i" );
+      string label_teste = gera_label( "teste_for" );
+      string label_fim = gera_label( "fim_for" );
+      string condicao = gera_nome_var_temp( "b" );
+      string rt = gera_nome_var_temp( "b" );
 
-  if( s1.t.tipo_base == "s" && s3.t.tipo_base == "s" ) {  
+      ss.c += "  " + var_inicio + " = " + toString(s1.t.inicio[0]) + ";\n" +
+              "  " + var_fim + " = " + toString(s1.t.fim[0]) + ";\n" +
+              "  " + rt + " = " + toString(tam1) + " != " + toString(tam3) + ";\n" +
+                    label_teste + ":;\n" +
+                    "  " +condicao+" = "+ var_inicio + " > " + var_fim + ";\n" + 
+                    "  " +condicao+" = "+ condicao + " || " + rt + ";\n" + 
+                    "  " + "if( " + condicao + " ) goto " + label_fim + 
+                    ";\n" +
+
+                    "  " + v1 + " = " +  s1.v + "[" + var_inicio + "];\n" +
+                    "  " + v3 + " = " +  s3.v + "[" + var_inicio + "];\n" +
+                    "  " + rt + " = " + v1 + " == " + v3 + ";\n" +
+                    "  " + rt + " = !"+ rt + ";\n" +
+
+                    "  " + var_inicio + " = " + var_inicio + " + 1;\n" +
+                    "  goto " + label_teste + ";\n" +
+                    label_fim + ":;\n" + 
+                    ss.v + " = !" + rt + ";\n";
+        
+    }else{
+      erro( "Comparacao entre arrays apenas entre arrays de mesmo tipo" );
+    }
+  }
+  else if( s1.t.tipo_base == "s" && s3.t.tipo_base == "s" ) {  
     if( opr == "+" )
       ss.c += "  strncpy( " + ss.v + ", " + s1.v + ", 256 );\n" +
               "  strncat( " + ss.v + ", " + s3.v + ", 256 );\n";
@@ -1023,7 +1060,7 @@ string traduz_nome_tipo_cute( string tipo_lex ) {
   else if( tipo_lex == "c" )
     return "charzinho";  
   else if( tipo_lex == "s" )
-    return "txtzinho";  
+    return "txtzinho"; 
   else 
     erro( "Tipo inválido: " + tipo_lex );
 }

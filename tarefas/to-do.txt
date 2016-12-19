@@ -2,8 +2,7 @@ Para obter 5 pontos:
 
 1) Estruturas de controle: while, do-while, switch.
 2) Inicializar var global
-3) passar array ou matrizes como argumento.
-4) operações basicas entre elementos de um array ou matriz.
+3) operações basicas entre elementos de um array ou matriz.
 
 
 Para nota maior que 5

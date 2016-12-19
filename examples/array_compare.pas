@@ -5,7 +5,7 @@ inicinho[:
 
 	intinho i;
     intinho matriz_1[1..3];
-    intinho matriz_2[1..4];
+    intinho matriz_2[1..3];
 
 	intinho lin_a, lin_b;
 	lin_a = 3;

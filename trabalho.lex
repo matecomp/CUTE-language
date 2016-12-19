@@ -22,6 +22,7 @@ COMENTARIO ">.<"(.)*">.<"
 {COMENTARIO}  	{}
 
 "oiee"		{ yylval = Atributos( yytext); return TK_PROGRAM; }
+"voidinho"  	{ yylval = Atributos( yytext); return TK_VOID; }
 "intinho"	{ yylval = Atributos( yytext); return TK_INT; }
 "charzinho"	{ yylval = Atributos( yytext); return TK_CHAR; }
 "boolzinho"	{ yylval = Atributos( yytext); return TK_BOOL; }
