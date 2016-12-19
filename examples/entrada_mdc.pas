@@ -3,12 +3,15 @@ oiee PROGRAMINHA;
 
 
 >.< Funcaozinha que faz MDCs fofos >.<
+funcaozinha intinho X()[:
+	retorninho 0;
+:]
 funcaozinha intinho MDC(intinho a, intinho b)[:
 	intinho saida;
     ifinho b == 0 [:
     	saida = a;
     :] elsinho [:
-    	saida = MDC( b, a % b );
+    	saida = MDC(b, a%b);
     :]
 	retorninho saida;
 :]
