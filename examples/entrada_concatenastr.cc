@@ -21,7 +21,7 @@ char ts_11[256];
 char ts_12[256];
 char ts_13[256];
 char ts_14[256];
-tb_1 = strcmp( a, b ) > 0;
+  tb_1 = strcmp( a, b ) > 0;
   tb_1 = !tb_1;
 
   if( tb_1 ) goto l_else_1;

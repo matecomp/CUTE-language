@@ -1,40 +1,24 @@
 >.< Cute language example code >.<
 oiee PROGRAMINHA;
 
+>.< variavelzinha global >.<
+intinho seed;
 
 >.< Funcaozinha que formata seu nominho e sobrenominhuuu  >.<
-funcaozinha intinho formata( txtzinho saida, txtzinho a, txtzinho b )[:
-	ifinho a > b [:
-		saida = 'Sr(a). ' + a + ' ' + b;
-	:]elsinho[:
-		saida = 'Mr(s). ' + b + ', ' + a;
-	:]
-	retorninho 0;
+funcaozinha intinho pseudo_random()[:
+	intinho aux;
+	
+	seed = (8253729 * seed + 2396403);
+
+	aux = (seed % 32767 + 32767) % 32767;
+	retorninho aux;
 :]
 
 inicinho[:
 	
-	txtzinho nome1;
-	txtzinho nome2;
-	txtzinho saida;
-
+	seed = 5323;
 	intinho i;
-
-	printin('Digite o seu nome: ');
-	scanzin(nome1);
-
-	printin('Digite o seu sobrenome: ');
-	scanzin(nome2);
-
-	printinln('');
-	printin('Bom dia: ');
-	i = formata(saida, nome1, nome2 );
-	printinln(saida);
-	printin('Bom dia: ');
-	i = formata(saida, ' ' + nome1, nome2 );
-	printinln(saida);
-	printin('Bom dia: ');
-	i = formata(saida, nome1, nome2 + ' ' );
-	printinln(saida);
+	i = pseudo_random();
+	printinln(i);
 
 :]finzinho

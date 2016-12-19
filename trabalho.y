@@ -264,7 +264,7 @@ CABECALHO : TIPO TK_ID OPC_PARAM
 
 OPC_PARAM : '(' PARAMS ')'
             { $$ = $2; }
-          |
+          | '(' ')'
             { $$ = Atributos(); }
           ;
 
@@ -554,8 +554,14 @@ NOME_VAR : TK_ID
 
               $$.v = gera_nome_var_temp( $$.t.tipo_base );
 
+              if( $$.t.params.size() != $3.lista_tipo.size() )
+                erro( "Numero de argumentos inválido." );
+              if( $3.lista_str.size() != $3.lista_tipo.size() )
+                erro( "Nada a veirr tiio!" );
+
               // Verifica se o tipo do argumento fornecido esta correto
               $$.c = $3.c + "  " + $$.v + " = " + $1.v + "( ";
+
               string error_string = "Argumento invalido, funcao "+$1.v+"(";
               string aux1, aux2;
               bool error_flag = false;
@@ -583,6 +589,18 @@ NOME_VAR : TK_ID
               }
         
               $$.c += $3.lista_str[$3.lista_str.size()-1] + " );\n"; 
+            }
+            | TK_ID '(' ')'
+            {
+              Tipo tipoArray = consulta_var_ts( $1.v );
+              $$.t = tipoArray;
+
+              $$.v = gera_nome_var_temp( $$.t.tipo_base );
+              
+              if( $$.t.params.size() != 0 )
+                erro( "Esta função possui argumentos" );
+              // Verifica se o tipo do argumento fornecido esta correto
+              $$.c = $3.c + "  " + $$.v + " = " + $1.v + "();\n";
             }
          ; 
   
