@@ -19,9 +19,9 @@ funcaozinha dbzinho multiplica( dbzinho a[][], dbzinho b[][]
 						, intinho lin_b, intinho col_b
 						, dbzinho c[][] )[:
 	intinho i, j, k;
+	dbzinho aux1, aux2, auxf;
 	forzinho i = 0..lin_a [:
 		forzinho j = 0..col_b[:
-			dbzinho aux1, aux2, auxf;
 			auxf = 0.0;
 			forzinho k = 0..col_a[:
 				aux1 = a[i][k];

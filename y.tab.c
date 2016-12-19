@@ -159,7 +159,7 @@ struct Atributos {
 
 // Declarar todas as funções que serão usadas.
 void insere_var_ts( string nome_var, Tipo tipo );
-void insere_var_col_ts( string nome_var );
+void insere_var_rc_ts( string nome_var );
 void insere_funcao_ts( string nome_func, Tipo retorno, vector<Tipo> params, vector<string> names );
 Tipo consulta_var_ts( string nome_var );
 Tipo consulta_funcao_ts( string nome_var );
@@ -622,10 +622,10 @@ static const yytype_uint16 yyrline[] =
      251,   255,   255,   255,   260,   260,   268,   274,   276,   280,
      292,   295,   301,   309,   317,   325,   325,   331,   340,   342,
      344,   347,   348,   349,   350,   351,   352,   355,   356,   359,
-     381,   383,   387,   394,   400,   406,   423,   440,   468,   470,
-     472,   474,   476,   478,   480,   482,   484,   486,   488,   490,
-     492,   494,   496,   506,   509,   510,   512,   514,   524,   540,
-     566,   624,   637,   644,   651
+     381,   383,   387,   394,   400,   406,   423,   440,   472,   474,
+     476,   478,   480,   482,   484,   486,   488,   490,   492,   494,
+     496,   498,   500,   510,   513,   514,   516,   518,   528,   544,
+     574,   641,   654,   661,   668
 };
 #endif
 
@@ -1963,13 +1963,17 @@ yyreduce:
           }
           string aux = gera_nome_var_temp( (yyvsp[-6]).t.tipo_base );
           string tam;
-          if( (yyval).t.arg == 1 )
-            tam = (yyvsp[-8]).v + "_col_matriz";
-          else
+          string ope = "";
+          if( (yyval).t.arg == 1 ){
+            ope =  "  " + aux + " = " + (yyvsp[-8]).v + "_fim2_matriz" + " - " + (yyvsp[-8]).v + "_ini2_matriz;\n";
+            ope += "  " + aux + " = " + aux  + " + 1;\n";
+            tam = aux;
+          }else
             tam = toString((yyval).t.fim[1] - (yyval).t.inicio[1] + 1);
 
           (yyval).c = (yyvsp[-6]).c + (yyvsp[-3]).c + (yyvsp[0]).c +
-                 gera_teste_limite_array( (yyval).t, (yyvsp[-6]).v, (yyvsp[-3]).v ) +   
+                 gera_teste_limite_array( (yyval).t, (yyvsp[-6]).v, (yyvsp[-3]).v ) + 
+                 ope +  
 		 "  " + aux  + " = " + tam  + "*" + (yyvsp[-6]).v + ";\n" +
 		 "  " + aux  + " = " + aux  + "+" + (yyvsp[-3]).v + ";\n";
           if( (yyval).t.tipo_base == "s" )
@@ -1977,95 +1981,95 @@ yyreduce:
           else
             (yyval).c += "  " + (yyvsp[-8]).v + "[" + aux + "] = " + (yyvsp[0]).v + ";\n";
         }
-#line 1981 "y.tab.c" /* yacc.c:1646  */
+#line 1985 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 469 "trabalho.y" /* yacc.c:1646  */
+#line 473 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "+", (yyvsp[0]) ); }
-#line 1987 "y.tab.c" /* yacc.c:1646  */
+#line 1991 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 471 "trabalho.y" /* yacc.c:1646  */
+#line 475 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "-", (yyvsp[0]) ); }
-#line 1993 "y.tab.c" /* yacc.c:1646  */
+#line 1997 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 473 "trabalho.y" /* yacc.c:1646  */
+#line 477 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "*", (yyvsp[0]) ); }
-#line 1999 "y.tab.c" /* yacc.c:1646  */
+#line 2003 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 475 "trabalho.y" /* yacc.c:1646  */
+#line 479 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "/", (yyvsp[0]) ); }
-#line 2005 "y.tab.c" /* yacc.c:1646  */
+#line 2009 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 477 "trabalho.y" /* yacc.c:1646  */
+#line 481 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "%", (yyvsp[0]) ); }
-#line 2011 "y.tab.c" /* yacc.c:1646  */
+#line 2015 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 479 "trabalho.y" /* yacc.c:1646  */
+#line 483 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "<", (yyvsp[0]) ); }
-#line 2017 "y.tab.c" /* yacc.c:1646  */
+#line 2021 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 481 "trabalho.y" /* yacc.c:1646  */
+#line 485 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), ">", (yyvsp[0]) ); }
-#line 2023 "y.tab.c" /* yacc.c:1646  */
+#line 2027 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 483 "trabalho.y" /* yacc.c:1646  */
+#line 487 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "<=", (yyvsp[0]) ); }
-#line 2029 "y.tab.c" /* yacc.c:1646  */
+#line 2033 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 485 "trabalho.y" /* yacc.c:1646  */
+#line 489 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), ">=", (yyvsp[0]) ); }
-#line 2035 "y.tab.c" /* yacc.c:1646  */
+#line 2039 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 487 "trabalho.y" /* yacc.c:1646  */
+#line 491 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "==", (yyvsp[0]) ); }
-#line 2041 "y.tab.c" /* yacc.c:1646  */
+#line 2045 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 489 "trabalho.y" /* yacc.c:1646  */
+#line 493 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "!=", (yyvsp[0]) ); }
-#line 2047 "y.tab.c" /* yacc.c:1646  */
+#line 2051 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 491 "trabalho.y" /* yacc.c:1646  */
+#line 495 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "&&", (yyvsp[0]) ); }
-#line 2053 "y.tab.c" /* yacc.c:1646  */
+#line 2057 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 493 "trabalho.y" /* yacc.c:1646  */
+#line 497 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = gera_codigo_operador( (yyvsp[-2]), "||", (yyvsp[0]) ); }
-#line 2059 "y.tab.c" /* yacc.c:1646  */
+#line 2063 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 495 "trabalho.y" /* yacc.c:1646  */
+#line 499 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[-1]); }
-#line 2065 "y.tab.c" /* yacc.c:1646  */
+#line 2069 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 497 "trabalho.y" /* yacc.c:1646  */
+#line 501 "trabalho.y" /* yacc.c:1646  */
     { 
       if( (yyvsp[0]).t.tipo_base != "b" )
         erro( "Queridinha, voce nao pode negar uma expressaozinha do tipinho " + traduz_nome_tipo_cute( (yyvsp[0]).t.tipo_base ) );
@@ -2075,23 +2079,23 @@ yyreduce:
              (yyval).v + " = " + "!" + (yyvsp[0]).v + ";\n";
       
     }
-#line 2079 "y.tab.c" /* yacc.c:1646  */
+#line 2083 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 511 "trabalho.y" /* yacc.c:1646  */
+#line 515 "trabalho.y" /* yacc.c:1646  */
     { (yyval).v = (yyvsp[0]).v; (yyval).t = Tipo( "i" ); (yyval).c = (yyvsp[0]).c; }
-#line 2085 "y.tab.c" /* yacc.c:1646  */
+#line 2089 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 513 "trabalho.y" /* yacc.c:1646  */
+#line 517 "trabalho.y" /* yacc.c:1646  */
     { (yyval).v = (yyvsp[0]).v; (yyval).t = Tipo( "d" ); (yyval).c = (yyvsp[0]).c; }
-#line 2091 "y.tab.c" /* yacc.c:1646  */
+#line 2095 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 515 "trabalho.y" /* yacc.c:1646  */
+#line 519 "trabalho.y" /* yacc.c:1646  */
     { (yyval).v = (yyvsp[0]).v;
       (yyval).t = Tipo( "s" );
       if( (yyvsp[0]).v.size() - 2 == 1 ) {
@@ -2101,11 +2105,11 @@ yyreduce:
       }
       (yyval).c = (yyvsp[0]).c; 
     }
-#line 2105 "y.tab.c" /* yacc.c:1646  */
+#line 2109 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 525 "trabalho.y" /* yacc.c:1646  */
+#line 529 "trabalho.y" /* yacc.c:1646  */
     { 
        Tipo tipoArray = consulta_var_ts( (yyvsp[-3]).v );
        (yyval).t = tipoArray;
@@ -2121,11 +2125,11 @@ yyreduce:
        gera_teste_limite_array( tipoArray, (yyvsp[-1]).v ) +   
        "  " + (yyval).v + " = " + (yyvsp[-3]).v + "[" + (yyvsp[-1]).v + "];\n";
      }
-#line 2125 "y.tab.c" /* yacc.c:1646  */
+#line 2129 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 541 "trabalho.y" /* yacc.c:1646  */
+#line 545 "trabalho.y" /* yacc.c:1646  */
     { 
        Tipo tipoArray = consulta_var_ts( (yyvsp[-6]).v );
             
@@ -2139,23 +2143,27 @@ yyreduce:
 
        string aux = gera_nome_var_temp( (yyvsp[-1]).t.tipo_base );
        string tam;
-       if( (yyval).t.arg == 1 )
-         tam = (yyvsp[-6]).v + "_col_matriz";
-       else
+       string ope = "";
+       if( (yyval).t.arg == 1 ){
+         ope =  "  " + aux + " = " + (yyvsp[-6]).v + "_fim2_matriz" + " - " + (yyvsp[-6]).v + "_ini2_matriz;\n";
+         ope += "  " + aux + " = " + aux  + " + 1;\n";
+         tam = aux;
+       }else
          tam = toString((yyval).t.fim[1] - (yyval).t.inicio[1] + 1);
 
        (yyval).v = gera_nome_var_temp( (yyval).t.tipo_base );
        (yyval).c = (yyvsp[-4]).c +
-         gera_teste_limite_array( tipoArray, (yyvsp[-4]).v, (yyvsp[-1]).v ) +   
+         gera_teste_limite_array( tipoArray, (yyvsp[-4]).v, (yyvsp[-1]).v ) +
+         ope +   
          "  " + aux  + " = " + tam + " * " + (yyvsp[-4]).v + ";\n" +
          "  " + aux  + " = " + aux + " + " + (yyvsp[-1]).v + ";\n" +
          "  " + (yyval).v + " = " + (yyvsp[-6]).v + "[" + aux + "];\n";
      }
-#line 2155 "y.tab.c" /* yacc.c:1646  */
+#line 2163 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 567 "trabalho.y" /* yacc.c:1646  */
+#line 575 "trabalho.y" /* yacc.c:1646  */
     { 
        Tipo tipoArray = consulta_var_ts( (yyvsp[-3]).v );
        (yyval).t = tipoArray;
@@ -2191,8 +2199,17 @@ yyreduce:
              (yyval).t.params[i].fim[0] = (yyvsp[-1]).lista_tipo[i].fim[0];
              (yyval).t.params[i].inicio[1] = (yyvsp[-1]).lista_tipo[i].inicio[1];
              (yyval).t.params[i].fim[1] = (yyvsp[-1]).lista_tipo[i].fim[1];
-             atualiza_valor += "  " + (yyval).t.names[i] + "_col_matriz = " + 
-                             toString((yyval).t.params[i].fim[1] - (yyval).t.params[i].inicio[1] + 1 ) + ";\n"; 
+             atualiza_valor += "  " + (yyval).t.names[i] + "_ini1_matriz = " + 
+                             toString((yyval).t.params[i].inicio[0]) + ";\n";
+
+             atualiza_valor += "  " + (yyval).t.names[i] + "_ini2_matriz = " + 
+                             toString((yyval).t.params[i].inicio[1]) + ";\n";
+
+             atualiza_valor += "  " + (yyval).t.names[i] + "_fim1_matriz = " + 
+                             toString((yyval).t.params[i].fim[0]) + ";\n";
+
+             atualiza_valor += "  " + (yyval).t.names[i] + "_fim2_matriz = " + 
+                             toString((yyval).t.params[i].fim[1]) + ";\n";
            }
          }
 
@@ -2213,11 +2230,11 @@ yyreduce:
        (yyval).c += (yyvsp[-1]).lista_str[(yyvsp[-1]).lista_str.size()-1] + " );\n";
        (yyval).c = atualiza_valor + (yyval).c;
      }
-#line 2217 "y.tab.c" /* yacc.c:1646  */
+#line 2234 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 625 "trabalho.y" /* yacc.c:1646  */
+#line 642 "trabalho.y" /* yacc.c:1646  */
     {
        Tipo tipoArray = consulta_var_ts( (yyvsp[-2]).v );
        (yyval).t = tipoArray;
@@ -2228,37 +2245,37 @@ yyreduce:
        // Verifica se o tipo do argumento fornecido esta correto
        (yyval).c = (yyvsp[0]).c + "  " + (yyval).v + " = " + (yyvsp[-2]).v + "();\n";
      }
-#line 2232 "y.tab.c" /* yacc.c:1646  */
+#line 2249 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 638 "trabalho.y" /* yacc.c:1646  */
+#line 655 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = Atributos();
           (yyval).c = (yyvsp[-2]).c + (yyvsp[0]).c;
           (yyval).lista_str = (yyvsp[-2]).lista_str;
           (yyval).lista_tipo = (yyvsp[-2]).lista_tipo;
           (yyval).lista_str.push_back( (yyvsp[0]).v );
           (yyval).lista_tipo.push_back( (yyvsp[0]).t );  }
-#line 2243 "y.tab.c" /* yacc.c:1646  */
+#line 2260 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 645 "trabalho.y" /* yacc.c:1646  */
+#line 662 "trabalho.y" /* yacc.c:1646  */
     { (yyval) = Atributos();
           (yyval).c = (yyvsp[0]).c;
           (yyval).lista_str.push_back( (yyvsp[0]).v ); 
           (yyval).lista_tipo.push_back( (yyvsp[0]).t ); }
-#line 2252 "y.tab.c" /* yacc.c:1646  */
+#line 2269 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 652 "trabalho.y" /* yacc.c:1646  */
+#line 669 "trabalho.y" /* yacc.c:1646  */
     { (yyval).v = (yyvsp[0]).v; (yyval).t = consulta_var_ts( (yyvsp[0]).v ); (yyval).c = (yyvsp[0]).c; }
-#line 2258 "y.tab.c" /* yacc.c:1646  */
+#line 2275 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2262 "y.tab.c" /* yacc.c:1646  */
+#line 2279 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2486,7 +2503,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 655 "trabalho.y" /* yacc.c:1906  */
+#line 672 "trabalho.y" /* yacc.c:1906  */
 
 int nlinha = 1;
 
@@ -2695,13 +2712,16 @@ Tipo consulta_funcao_ts( string nome_func ) {
   return Tipo();
 }
 
-void insere_var_col_ts( string nome_var ) {
+void insere_var_rc_ts( string nome_var ) {
   if( aux_ts.find( nome_var ) != aux_ts.end() )
     erro( "Variável já declarada: " + nome_var + 
           " (" + aux_ts[ nome_var ].tipo_base + ")" );
     
   aux_ts[ nome_var ] = Tipo( "i" );
-  colunas += "int " + nome_var + ";\n";
+  colunas += "int " + nome_var + "_ini1_matriz" + ";\n";
+  colunas += "int " + nome_var + "_ini2_matriz" + ";\n";
+  colunas += "int " + nome_var + "_fim1_matriz" + ";\n";
+  colunas += "int " + nome_var + "_fim2_matriz" + ";\n";
 }
 
 void insere_var_ts( string nome_var, Tipo tipo ) {
@@ -2778,6 +2798,10 @@ Atributos gera_codigo_operador( Atributos s1, string opr, Atributos s3 ) {
   string aux = gera_nome_var_temp( "s" );
   
   ss.c = s1.c + s3.c;
+
+  if( s1.t.ndim == VETOR ) {
+    erro( s1.c );
+  }
 
   if( s1.t.tipo_base == "s" && s3.t.tipo_base == "s" ) {  
     if( opr == "+" )
@@ -2930,8 +2954,7 @@ string declara_funcao( string nome, Tipo tipo, vector<string> nomes, vector<Tipo
     nomes[i] = nomes[i].substr(0,tam+1);
     insere_var_ts( nomes[i], tipos[i] );
     if( tipos[i].ndim == MATRIZ ) {
-        string nome = nomes[i] + "_col_matriz";
-        insere_var_col_ts( nome );
+        insere_var_rc_ts( nomes[i] );
     }
   }
 
@@ -2957,10 +2980,11 @@ string gera_teste_limite_array( Tipo tipoArray, string indice_1, string indice_2
                   "  " + var_teste_fim1 + " = " + indice_1 + " <= " +
                   toString( tipoArray.fim[0] ) + ";\n" +
 
-                  "  " + var_teste1 + " = " + var_teste_inicio1 + " && " + 
-                                             var_teste_fim1 + ";\n";
-      codigo += "  if( " + var_teste1 + " ) goto " + label_end + ";\n" +
-          "    printf( \"Limite de array ultrapassado: %d <= %d <= %d\", "+
+               "  " + var_teste1 + " = " + var_teste_inicio1 + " && " + 
+                                            var_teste_fim1 + ";\n";
+
+          codigo += "  if( " + var_teste1 + " ) goto " + label_end + ";\n" +
+               "    printf( \"Limite de array ultrapassado: %d <= %d <= %d\", "+
                toString( tipoArray.inicio[0] ) + " ," + indice_1 + ", " +
                toString( tipoArray.fim[0] ) + " );\n" +
                "  cout << endl;\n" + 

@@ -94,7 +94,7 @@ struct Atributos {
 
 // Declarar todas as funções que serão usadas.
 void insere_var_ts( string nome_var, Tipo tipo );
-void insere_var_col_ts( string nome_var );
+void insere_var_rc_ts( string nome_var );
 void insere_funcao_ts( string nome_func, Tipo retorno, vector<Tipo> params, vector<string> names );
 Tipo consulta_var_ts( string nome_var );
 Tipo consulta_funcao_ts( string nome_var );
@@ -449,13 +449,17 @@ ATRIB : TK_ID TK_ATRIB E
           }
           string aux = gera_nome_var_temp( $3.t.tipo_base );
           string tam;
-          if( $$.t.arg == 1 )
-            tam = $1.v + "_col_matriz";
-          else
+          string ope = "";
+          if( $$.t.arg == 1 ){
+            ope =  "  " + aux + " = " + $1.v + "_fim2_matriz" + " - " + $1.v + "_ini2_matriz;\n";
+            ope += "  " + aux + " = " + aux  + " + 1;\n";
+            tam = aux;
+          }else
             tam = toString($$.t.fim[1] - $$.t.inicio[1] + 1);
 
           $$.c = $3.c + $6.c + $9.c +
-                 gera_teste_limite_array( $$.t, $3.v, $6.v ) +   
+                 gera_teste_limite_array( $$.t, $3.v, $6.v ) + 
+                 ope +  
 		 "  " + aux  + " = " + tam  + "*" + $3.v + ";\n" +
 		 "  " + aux  + " = " + aux  + "+" + $6.v + ";\n";
           if( $$.t.tipo_base == "s" )
@@ -551,14 +555,18 @@ F : NOME_VAR
 
        string aux = gera_nome_var_temp( $6.t.tipo_base );
        string tam;
-       if( $$.t.arg == 1 )
-         tam = $1.v + "_col_matriz";
-       else
+       string ope = "";
+       if( $$.t.arg == 1 ){
+         ope =  "  " + aux + " = " + $1.v + "_fim2_matriz" + " - " + $1.v + "_ini2_matriz;\n";
+         ope += "  " + aux + " = " + aux  + " + 1;\n";
+         tam = aux;
+       }else
          tam = toString($$.t.fim[1] - $$.t.inicio[1] + 1);
 
        $$.v = gera_nome_var_temp( $$.t.tipo_base );
        $$.c = $3.c +
-         gera_teste_limite_array( tipoArray, $3.v, $6.v ) +   
+         gera_teste_limite_array( tipoArray, $3.v, $6.v ) +
+         ope +   
          "  " + aux  + " = " + tam + " * " + $3.v + ";\n" +
          "  " + aux  + " = " + aux + " + " + $6.v + ";\n" +
          "  " + $$.v + " = " + $1.v + "[" + aux + "];\n";
@@ -599,8 +607,17 @@ F : NOME_VAR
              $$.t.params[i].fim[0] = $3.lista_tipo[i].fim[0];
              $$.t.params[i].inicio[1] = $3.lista_tipo[i].inicio[1];
              $$.t.params[i].fim[1] = $3.lista_tipo[i].fim[1];
-             atualiza_valor += "  " + $$.t.names[i] + "_col_matriz = " + 
-                             toString($$.t.params[i].fim[1] - $$.t.params[i].inicio[1] + 1 ) + ";\n"; 
+             atualiza_valor += "  " + $$.t.names[i] + "_ini1_matriz = " + 
+                             toString($$.t.params[i].inicio[0]) + ";\n";
+
+             atualiza_valor += "  " + $$.t.names[i] + "_ini2_matriz = " + 
+                             toString($$.t.params[i].inicio[1]) + ";\n";
+
+             atualiza_valor += "  " + $$.t.names[i] + "_fim1_matriz = " + 
+                             toString($$.t.params[i].fim[0]) + ";\n";
+
+             atualiza_valor += "  " + $$.t.names[i] + "_fim2_matriz = " + 
+                             toString($$.t.params[i].fim[1]) + ";\n";
            }
          }
 
@@ -860,13 +877,16 @@ Tipo consulta_funcao_ts( string nome_func ) {
   return Tipo();
 }
 
-void insere_var_col_ts( string nome_var ) {
+void insere_var_rc_ts( string nome_var ) {
   if( aux_ts.find( nome_var ) != aux_ts.end() )
     erro( "Variável já declarada: " + nome_var + 
           " (" + aux_ts[ nome_var ].tipo_base + ")" );
     
   aux_ts[ nome_var ] = Tipo( "i" );
-  colunas += "int " + nome_var + ";\n";
+  colunas += "int " + nome_var + "_ini1_matriz" + ";\n";
+  colunas += "int " + nome_var + "_ini2_matriz" + ";\n";
+  colunas += "int " + nome_var + "_fim1_matriz" + ";\n";
+  colunas += "int " + nome_var + "_fim2_matriz" + ";\n";
 }
 
 void insere_var_ts( string nome_var, Tipo tipo ) {
@@ -943,6 +963,10 @@ Atributos gera_codigo_operador( Atributos s1, string opr, Atributos s3 ) {
   string aux = gera_nome_var_temp( "s" );
   
   ss.c = s1.c + s3.c;
+
+  if( s1.t.ndim == VETOR ) {
+    erro( s1.c );
+  }
 
   if( s1.t.tipo_base == "s" && s3.t.tipo_base == "s" ) {  
     if( opr == "+" )
@@ -1095,8 +1119,7 @@ string declara_funcao( string nome, Tipo tipo, vector<string> nomes, vector<Tipo
     nomes[i] = nomes[i].substr(0,tam+1);
     insere_var_ts( nomes[i], tipos[i] );
     if( tipos[i].ndim == MATRIZ ) {
-        string nome = nomes[i] + "_col_matriz";
-        insere_var_col_ts( nome );
+        insere_var_rc_ts( nomes[i] );
     }
   }
 
@@ -1122,10 +1145,11 @@ string gera_teste_limite_array( Tipo tipoArray, string indice_1, string indice_2
                   "  " + var_teste_fim1 + " = " + indice_1 + " <= " +
                   toString( tipoArray.fim[0] ) + ";\n" +
 
-                  "  " + var_teste1 + " = " + var_teste_inicio1 + " && " + 
-                                             var_teste_fim1 + ";\n";
-      codigo += "  if( " + var_teste1 + " ) goto " + label_end + ";\n" +
-          "    printf( \"Limite de array ultrapassado: %d <= %d <= %d\", "+
+               "  " + var_teste1 + " = " + var_teste_inicio1 + " && " + 
+                                            var_teste_fim1 + ";\n";
+
+          codigo += "  if( " + var_teste1 + " ) goto " + label_end + ";\n" +
+               "    printf( \"Limite de array ultrapassado: %d <= %d <= %d\", "+
                toString( tipoArray.inicio[0] ) + " ," + indice_1 + ", " +
                toString( tipoArray.fim[0] ) + " );\n" +
                "  cout << endl;\n" + 
